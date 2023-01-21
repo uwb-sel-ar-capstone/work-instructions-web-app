@@ -6,6 +6,12 @@ const StepSchema = new mongoose.Schema({
     required: [true, "must provide name"],
     trim: true,
   },
+  items: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "item",
+    },
+  ],
   image: {
     // TODO: investigate object storage for images
     type: mongoose.Schema.Types.ObjectId,
