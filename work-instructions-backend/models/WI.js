@@ -1,8 +1,7 @@
 const mongoose = require("mongoose");
-const step = require("./Step");
 
 const WISchema = new mongoose.Schema({
-  wi_name: {
+  wiName: {
     type: String,
     required: [true, "must provide work instruction name"],
     trim: true,
@@ -11,7 +10,7 @@ const WISchema = new mongoose.Schema({
   steps: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "step",
+      ref: "Step",
     },
   ],
 });

@@ -3,13 +3,13 @@ const mongoose = require("mongoose");
 const StepSchema = new mongoose.Schema({
   stepText: {
     type: String,
-    required: [true, "must provide name"],
+    required: [true, "must provide stepText"],
     trim: true,
   },
   items: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "item",
+      ref: "Item",
     },
   ],
   image: {
