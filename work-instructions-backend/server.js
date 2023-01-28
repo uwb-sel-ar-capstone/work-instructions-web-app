@@ -1,4 +1,5 @@
 const express = require("express");
+require("express-async-errors");
 const cors = require("cors");
 const connectDB = require("./db/connect");
 const steps = require("./routes/steps");

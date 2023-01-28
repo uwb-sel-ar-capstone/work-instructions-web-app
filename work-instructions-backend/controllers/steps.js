@@ -1,7 +1,10 @@
 const Step = require("../models/Step");
+const Item = require("../models/Item");
 const { createCustomError } = require("../errors/custom-error");
 const mongoose = require("mongoose");
 const toId = mongoose.Types.ObjectId;
+const checkIds = require("../helpers/check-ids");
+const checkId = require("../helpers/check-id");
 
 /**
  * createOrUpdateStepData - helper function that parses the body of a request to generate the data used by mongoose to create or update step documents
@@ -31,7 +34,11 @@ const getAllSteps = async (req, res) => {
   res.status(200).json({ steps });
 };
 
-const createStep = async (req, res) => {
+const createStep = async (req, res, next) => {
+  const badItemIds = await checkIds(req.body.items, Item);
+  if (badItemIds.length > 0) {
+    return next(createCustomError(`No items with ids: ${badItemIds}`, 400));
+  }
   const stepData = createOrUpdateStepData(req);
   const step = await (await Step.create(stepData)).populate("items");
 
@@ -40,10 +47,11 @@ const createStep = async (req, res) => {
 
 const getStep = async (req, res, next) => {
   const { id: stepID } = req.params;
-  const step = await Step.findOne({ _id: stepID });
-  if (!step) {
-    return next(createCustomError(`No step with id : ${stepID}`, 404));
+  const validStepId = await checkId(stepID, Step);
+  if (!validStepId) {
+    return next(createCustomError(`No step with id: ${stepID}`, 404));
   }
+  const step = await Step.findOne({ _id: stepID });
 
   await step.populate("items");
 
@@ -52,16 +60,25 @@ const getStep = async (req, res, next) => {
 
 const deleteStep = async (req, res, next) => {
   const { id: stepID } = req.params;
-  const step = await Step.findOneAndDelete({ _id: stepID });
-  if (!step) {
-    return next(createCustomError(`No step with id : ${stepID}`, 404));
+  const validStepId = await checkId(stepID, Step);
+  if (!validStepId) {
+    return next(createCustomError(`No step with id: ${stepID}`, 404));
   }
+  const step = await Step.findOneAndDelete({ _id: stepID });
   await step.populate("items");
   res.status(200).json({ step });
 };
 
 const updateStep = async (req, res, next) => {
   const { id: stepID } = req.params;
+  const validStepId = await checkId(stepID, Step);
+  if (!validStepId) {
+    return next(createCustomError(`No step with id: ${stepID}`, 404));
+  }
+  const badItemIds = await checkIds(req.body.items, Item);
+  if (badItemIds.length > 0) {
+    return next(createCustomError(`No items with ids: ${badItemIds}`, 400));
+  }
 
   const stepData = createOrUpdateStepData(req);
 
@@ -69,10 +86,6 @@ const updateStep = async (req, res, next) => {
     new: true, // returns the new object
     runValidators: true,
   });
-
-  if (!step) {
-    return next(createCustomError(`No step with id : ${stepID}`, 404));
-  }
 
   await step.populate("items");
 

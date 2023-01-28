@@ -1,7 +1,10 @@
 const WI = require("../models/WI");
+const Step = require("../models/Step");
 const { createCustomError } = require("../errors/custom-error");
 const mongoose = require("mongoose");
 const toId = mongoose.Types.ObjectId;
+const checkIds = require("../helpers/check-ids");
+const checkId = require("../helpers/check-id");
 
 /**
  * createOrUpdateWIData - helper function that parses the body of a request to generate the data used by mongoose to create or update WI documents
@@ -31,7 +34,11 @@ const getAllWIs = async (req, res) => {
   res.status(200).json({ wis });
 };
 
-const createWI = async (req, res) => {
+const createWI = async (req, res, next) => {
+  const badStepIds = await checkIds(req.body.steps, Step);
+  if (badStepIds.length > 0) {
+    return next(createCustomError(`No steps with ids: ${badStepIds}`, 400));
+  }
   const wiData = createOrUpdateWIData(req);
   const wi = await (
     await WI.create(wiData)
@@ -42,12 +49,11 @@ const createWI = async (req, res) => {
 
 const getWI = async (req, res, next) => {
   const { id: wiID } = req.params;
-  const wi = await WI.findOne({ _id: wiID });
-  if (!wi) {
-    return next(
-      createCustomError(`No work instruction with id : ${wiID}`, 404)
-    );
+  const validWIId = await checkId(wiID, WI);
+  if (!validWIId) {
+    return next(createCustomError(`No work instruction with id: ${wiID}`, 404));
   }
+  const wi = await WI.findOne({ _id: wiID });
 
   await wi.populate({ path: "steps", populate: { path: "items" } });
 
@@ -56,18 +62,25 @@ const getWI = async (req, res, next) => {
 
 const deleteWI = async (req, res, next) => {
   const { id: wiID } = req.params;
-  const wi = await WI.findOneAndDelete({ _id: wiID });
-  if (!wi) {
-    return next(
-      createCustomError(`No work instruction with id : ${wiID}`, 404)
-    );
+  const validWIId = await checkId(wiID, WI);
+  if (!validWIId) {
+    return next(createCustomError(`No work instruction with id: ${wiID}`, 404));
   }
+  const wi = await WI.findOneAndDelete({ _id: wiID });
   await wi.populate({ path: "steps", populate: { path: "items" } });
   res.status(200).json({ wi });
 };
 
 const updateWI = async (req, res, next) => {
   const { id: wiID } = req.params;
+  const validWIId = await checkId(wiID, WI);
+  if (!validWIId) {
+    return next(createCustomError(`No work instruction with id: ${wiID}`, 404));
+  }
+  const badStepIds = await checkIds(req.body.steps, Step);
+  if (badStepIds.length > 0) {
+    return next(createCustomError(`No steps with ids: ${badStepIds}`, 400));
+  }
 
   const wiData = createOrUpdateWIData(req);
 
@@ -75,12 +88,6 @@ const updateWI = async (req, res, next) => {
     new: true, // returns the new object
     runValidators: true,
   });
-
-  if (!wi) {
-    return next(
-      createCustomError(`No work instruction with id : ${wiID}`, 404)
-    );
-  }
 
   await wi.populate({ path: "steps", populate: { path: "items" } });
 
