@@ -1,7 +1,9 @@
 const express = require("express");
 require("express-async-errors");
 const cors = require("cors");
-const connectDB = require("./db/connect");
+const connectMongoDB = require("./db/connectMongoDB");
+//connects to Redis
+const redisClient = require("./db/connectRedis");
 const steps = require("./routes/steps");
 const items = require("./routes/items");
 const wis = require("./routes/wi");
@@ -25,7 +27,18 @@ app.use(errorHandlerMiddleware);
 
 const start = async () => {
   try {
-    await connectDB(process.env.MONGO_URI);
+    await connectMongoDB(process.env.MONGO_URI).then(
+      () => {
+        /** ready to use. The `mongoose.connect()` promise resolves to mongoose instance. */
+        console.log("Connected to MongoDB");
+      },
+      (err) => {
+        /** handle initial connection error */
+        console.log(
+          `Failed to connect to MongoDB. Closing server.\nMongoDB Error:${err}`
+        );
+      }
+    );
     app.listen(port, () => {
       console.log(`Server is running on port: ${port}`);
     });
