@@ -13,6 +13,11 @@ const WISchema = new mongoose.Schema({
       ref: "Step",
     },
   ],
+  image: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Image",
+    required: [true, "must provide image ID"],
+  },
 });
 
 module.exports = mongoose.model("WI", WISchema);

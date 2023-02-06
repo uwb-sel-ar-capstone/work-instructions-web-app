@@ -3,6 +3,7 @@ const toId = mongoose.Types.ObjectId;
 /**
  * checkId
  * @param {Object} id - id string
+ * @param {mongoose.Model} model - the mongoose model
  * @returns {Boolean} - boolean true if id is a valid document in model, false if otherwise
  */
 const checkId = async (id, model) => {
