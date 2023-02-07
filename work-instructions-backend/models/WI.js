@@ -13,6 +13,21 @@ const WISchema = new mongoose.Schema({
       ref: "Step",
     },
   ],
+  /*
+  // dimensions stored as cm
+  dimensions: {
+    xLengthCM: {
+      type: Number,
+      required: [true, "must specify xLength in cm"],
+      min: 0,
+    },
+    zLengthCM: {
+      type: Number,
+      required: [true, "must specify zLength in cm"],
+      min: 0,
+    },
+  },
+  */
   image: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Image",
