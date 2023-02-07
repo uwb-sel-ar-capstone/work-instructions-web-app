@@ -4,7 +4,6 @@ var notEmpty = function (positions) {
   return positions.length !== 0;
 };
 var lenPosEqualLenItems = function (positions) {
-  console.log(this);
   return this.items.length === positions.length;
 };
 

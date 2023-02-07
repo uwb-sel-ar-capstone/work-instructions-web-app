@@ -25,7 +25,6 @@ const createOrUpdateStepData = (req) => {
   }
 
   stepData["positions"] = req.body.positions;
-  console.log(req.body.positions);
 
   return stepData;
 };
