@@ -24,19 +24,9 @@ const createOrUpdateStepData = (req) => {
     stepData["items"] = itemIds;
   }
 
-  /*
-  let positionArrs = req.body.positions.map((positionArr) => {
-    return positionArr.map((pos) => {
-      console.log(pos);
-      return Number(pos);
-    });
-  });
-  */
-
   stepData["positions"] = req.body.positions;
   console.log(req.body.positions);
-  //stepData["positions"] = positionArrs;
-  //console.log(positionArrs);
+
   return stepData;
 };
 
