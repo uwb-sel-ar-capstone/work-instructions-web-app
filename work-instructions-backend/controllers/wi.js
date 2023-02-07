@@ -24,6 +24,8 @@ const createOrUpdateWIData = (bodyData) => {
     });
     wiData["steps"] = stepIDs;
   }
+  wiData["dimensions"] = bodyData.dimensions;
+  console.log(bodyData.dimensions);
   return wiData;
 };
 
