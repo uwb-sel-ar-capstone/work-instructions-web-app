@@ -11,7 +11,7 @@ const WorkInstructionCard = ({ workInstruction }) => {
     >
       <Card.Img variant="top" src={imageData} alt={workInstruction._id} />
       <Card.Body>
-        <Card.Title>{workInstruction.wiName}</Card.Title>
+        <Card.Title>{workInstruction.name}</Card.Title>
         <Card.Text>{workInstruction._id}</Card.Text>
         <Button href="editor" variant="light">
           Edit WI

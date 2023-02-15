@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
 const ItemSchema = new mongoose.Schema({
-  itemName: {
+  name: {
     type: String,
-    required: [true, "must provide item name"],
+    required: [true, "must provide name"],
     trim: true,
   },
   image: {

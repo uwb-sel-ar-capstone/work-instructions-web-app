@@ -15,7 +15,7 @@ const checkId = require("../helpers/check-id");
 const createOrUpdateWIData = (bodyData) => {
   let stepIDs = bodyData.steps;
 
-  let wiData = { wiName: bodyData.wiName };
+  let wiData = { name: bodyData.name };
 
   // If we are given step ids, map them to Mongoose ObjectIds
   if (stepIDs) {
@@ -25,7 +25,6 @@ const createOrUpdateWIData = (bodyData) => {
     wiData["steps"] = stepIDs;
   }
   wiData["dimensions"] = bodyData.dimensions;
-  console.log(bodyData.dimensions);
   return wiData;
 };
 
@@ -56,7 +55,7 @@ const createOrUpdateImageData = (file) => {
  */
 
 const createPopulateArray = (shouldReturnImageData) => {
-  let populateArray = [{ path: "steps", populate: { path: "items" } }];
+  let populateArray = [{ path: "steps", populate: { path: "item" } }];
   if (shouldReturnImageData == "true") {
     populateArray.push({ path: "image" });
   }

@@ -14,7 +14,7 @@ const checkId = require("../helpers/check-id");
 const createOrUpdateStepData = (req) => {
   let itemId = req.body.item;
 
-  let stepData = { stepText: req.body.stepText };
+  let stepData = { text: req.body.text };
 
   // If we are given an item id, convert it to a mongoose objectid
   if (itemId) {

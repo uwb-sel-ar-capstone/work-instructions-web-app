@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
 const WISchema = new mongoose.Schema({
-  wiName: {
+  name: {
     type: String,
-    required: [true, "must provide work instruction name"],
+    required: [true, "must provide name"],
     trim: true,
   },
   // Array of object ids of step objects in the "step" collection

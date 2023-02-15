@@ -5,13 +5,13 @@ var notEmpty = function (positions) {
 };
 
 var validators = [
-  { validator: notEmpty, msg: "Need at least one item/position." },
+  { validator: notEmpty, msg: "Need at least one item and position." },
 ];
 
 const StepSchema = new mongoose.Schema({
-  stepText: {
+  text: {
     type: String,
-    required: [true, "must provide stepText"],
+    required: [true, "must provide text"],
     trim: true,
   },
   item: {
