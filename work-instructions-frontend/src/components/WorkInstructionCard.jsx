@@ -1,8 +1,14 @@
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
+import createNavigateToEditor from "../helpers/NavigateToEditor";
+import { useNavigate } from "react-router-dom";
 
 const WorkInstructionCard = ({ workInstruction }) => {
   const imageData = `data:${workInstruction.image.mimeType};charset=utf-8;${workInstruction.image.encoding},${workInstruction.image.imageData}`;
+  const navigateToEditor = createNavigateToEditor(
+    useNavigate(),
+    workInstruction._id
+  );
   return (
     <Card
       style={{ width: "24rem", backgroundColor: "rgba(17, 11, 17, 1)" }}
@@ -13,7 +19,7 @@ const WorkInstructionCard = ({ workInstruction }) => {
       <Card.Body>
         <Card.Title>{workInstruction.name}</Card.Title>
         <Card.Text>{workInstruction._id}</Card.Text>
-        <Button href="editor" variant="light">
+        <Button onClick={navigateToEditor} variant="light">
           Edit WI
         </Button>
       </Card.Body>
