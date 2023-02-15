@@ -3,16 +3,9 @@ const mongoose = require("mongoose");
 var notEmpty = function (positions) {
   return positions.length !== 0;
 };
-var lenPosEqualLenItems = function (positions) {
-  return this.items.length === positions.length;
-};
 
 var validators = [
   { validator: notEmpty, msg: "Need at least one item/position." },
-  {
-    validator: lenPosEqualLenItems,
-    msg: "Items and position arrays must have same length.",
-  },
 ];
 
 const StepSchema = new mongoose.Schema({
@@ -21,12 +14,10 @@ const StepSchema = new mongoose.Schema({
     required: [true, "must provide stepText"],
     trim: true,
   },
-  items: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Item",
-    },
-  ],
+  item: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Item",
+  },
   positions: {
     type: [
       {
