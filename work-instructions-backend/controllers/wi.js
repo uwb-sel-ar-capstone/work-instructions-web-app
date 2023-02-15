@@ -14,6 +14,9 @@ const checkId = require("../helpers/check-id");
  */
 const createOrUpdateWIData = (bodyData) => {
   let stepIDs = bodyData.steps;
+  if (!Array.isArray(stepIDs)) {
+    stepIDs = Array(stepIDs);
+  }
 
   let wiData = { name: bodyData.name };
 
@@ -73,7 +76,11 @@ const getAllWIs = async (req, res) => {
 };
 
 const createWI = async (req, res, next) => {
-  const badStepIds = await checkIds(req.body.steps, Step);
+  let steps = req.body.steps;
+  if (!Array.isArray(steps)) {
+    steps = Array(steps);
+  }
+  const badStepIds = await checkIds(steps, Step);
   if (badStepIds.length > 0) {
     return next(createCustomError(`No steps with ids: ${badStepIds}`, 400));
   }
@@ -140,7 +147,11 @@ const updateWI = async (req, res, next) => {
   if (!validWIId) {
     return next(createCustomError(`No work instruction with id: ${wiID}`, 404));
   }
-  const badStepIds = await checkIds(req.body.steps, Step);
+  let steps = req.body.steps;
+  if (!Array.isArray(steps)) {
+    steps = Array(steps);
+  }
+  const badStepIds = await checkIds(steps, Step);
   if (badStepIds.length > 0) {
     return next(createCustomError(`No steps with ids: ${badStepIds}`, 400));
   }
