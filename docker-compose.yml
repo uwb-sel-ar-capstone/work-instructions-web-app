@@ -1,0 +1,49 @@
+services:
+  react-app:
+    build:
+      context: ./work-instructions-frontend
+      dockerfile: Dockerfile
+    stdin_open: true
+    ports:
+      - "3000:3000"
+    hostname: react-app
+    networks:
+      - mern-app
+    volumes:
+      - ./work-instructions-frontend:/usr/src/app
+      - /usr/src/app/node_modules
+
+  express-server:
+    build:
+      context: ./work-instructions-backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+    hostname: express-server
+    networks:
+      - mern-app
+    volumes:
+      - ./work-instructions-backend:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run start:dev
+    working_dir: /usr/src/app
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - mern-app
+    volumes:
+      - mongo-data:/data/db
+    command: mongod --quiet --logpath /dev/null
+
+networks:
+  mern-app:
+    driver: bridge
+
+volumes:
+  mongo-data:
+    driver: local
