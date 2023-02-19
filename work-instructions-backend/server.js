@@ -13,6 +13,7 @@ const fs = require("fs");
 
 const app = express();
 const port = process.env.PORT || 5000;
+const mongoURI = process.env.MONGO_URI || "mongodb://mongo:27017/";
 
 app.use(cors());
 app.use(express.json());
@@ -27,7 +28,7 @@ app.use(errorHandlerMiddleware);
 
 const start = async () => {
   try {
-    await connectMongoDB(process.env.MONGO_URI).then(
+    await connectMongoDB(mongoURI).then(
       () => {
         /** ready to use. The `mongoose.connect()` promise resolves to mongoose instance. */
         console.log("Connected to MongoDB");
