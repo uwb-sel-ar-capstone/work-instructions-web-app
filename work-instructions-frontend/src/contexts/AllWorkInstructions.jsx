@@ -8,6 +8,7 @@ const getAllWorkInstructionsURL =
 
 const AppProvider = ({ children }) => {
   const [workInstructions, setWorkInstructions] = useState([]);
+  const [apiURL, setApiURL] = useState("http://localhost:5000/api/v1/");
 
   const getWorkInstructions = async (url) => {
     try {
@@ -26,7 +27,9 @@ const AppProvider = ({ children }) => {
   }, []);
 
   return (
-    <AppContext.Provider value={{ workInstructions }}>
+    <AppContext.Provider
+      value={{ workInstructions, apiURL, setApiURL, setWorkInstructions }}
+    >
       {children}
     </AppContext.Provider>
   );
