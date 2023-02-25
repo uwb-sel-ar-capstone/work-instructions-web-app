@@ -6,6 +6,7 @@ const connectMongoDB = require("./db/connectMongoDB");
 const steps = require("./routes/steps");
 const items = require("./routes/items");
 const wis = require("./routes/wi");
+const images = require("./routes/images");
 const debug = require("./routes/debug");
 const notFound = require("./middleware/not-found");
 const errorHandlerMiddleware = require("./middleware/error-handler");
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use("/api/v1/Steps", steps);
 app.use("/api/v1/Items", items);
 app.use("/api/v1/WorkInstructions", wis);
+app.use("/api/v1/Images", images);
 app.use("/api/v1/Debug", debug);
 
 app.use(notFound);
