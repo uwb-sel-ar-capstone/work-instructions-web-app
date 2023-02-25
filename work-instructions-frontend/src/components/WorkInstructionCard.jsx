@@ -15,7 +15,12 @@ const WorkInstructionCard = ({ workInstruction }) => {
       key={workInstruction._id}
       className="my-2"
     >
-      <Card.Img variant="top" src={imageData} alt={workInstruction._id} />
+      <Card.Img
+        className="main-card-list "
+        variant="top"
+        src={imageData}
+        alt={workInstruction._id}
+      />
       <Card.Body>
         <Card.Title>{workInstruction.name}</Card.Title>
         <Card.Text>{workInstruction._id}</Card.Text>

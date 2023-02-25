@@ -6,6 +6,8 @@ const AppContext = React.createContext();
 const getAllWorkInstructionsURL =
   "http://localhost:5000/api/v1/workinstructions?imageData=true";
 
+const baseAPIUrl = "http://localhost:5000/api/v1";
+
 const AppProvider = ({ children }) => {
   const [workInstructions, setWorkInstructions] = useState([]);
 
@@ -26,7 +28,7 @@ const AppProvider = ({ children }) => {
   }, []);
 
   return (
-    <AppContext.Provider value={{ workInstructions }}>
+    <AppContext.Provider value={{ workInstructions, baseAPIUrl }}>
       {children}
     </AppContext.Provider>
   );
