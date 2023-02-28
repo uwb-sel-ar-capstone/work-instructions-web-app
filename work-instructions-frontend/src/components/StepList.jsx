@@ -1,4 +1,5 @@
 import StepCard from "./StepCard";
+<<<<<<< HEAD
 import "./styles.css"
 
 import Accordion from '@mui/material/Accordion';
@@ -7,10 +8,16 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
+=======
+>>>>>>> Added Connection to API
 import { useState, useEffect } from 'react';
 
 const StepList = ({ workInstructionID }) => {
   const [steps, setSteps] = useState([]);
+<<<<<<< HEAD
+=======
+  const [currentStep, setCurrentStep] = useState(0);
+>>>>>>> Added Connection to API
 
   useEffect(() => {
     fetch(`http://localhost:5000/api/v1/steps?workInstructionID=${workInstructionID}`)
@@ -22,6 +29,7 @@ const StepList = ({ workInstructionID }) => {
       .catch(err => console.log(err));
   }, [workInstructionID]);
 
+<<<<<<< HEAD
   
   return (
     <div className="stepList">
@@ -54,3 +62,31 @@ const StepList = ({ workInstructionID }) => {
 };
 
 export default StepList;
+=======
+  const handleNextStep = () => {
+    setCurrentStep(currentStep + 1);
+  }
+
+  const handlePreviousStep = () => {
+    setCurrentStep(currentStep - 1);
+  }
+
+  const step = steps[currentStep] || {};
+
+  return (
+    <>
+      <StepCard step={step} />
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        {currentStep > 0 && (
+          <button onClick={handlePreviousStep}>Previous Step</button>
+        )}
+        {currentStep < steps.length - 1 && (
+          <button onClick={handleNextStep}>Next Step</button>
+        )}
+      </div>
+    </>
+  );
+};
+
+export default StepList;
+>>>>>>> Added Connection to API
