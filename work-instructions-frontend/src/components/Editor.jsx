@@ -7,6 +7,7 @@ import { useGlobalContext } from "../context";
 
 const Editor = () => {
   const { baseAPIUrl } = useGlobalContext();
+  const { workInstructions } = useGlobalContext();
   // eslint-disable-next-line
   const [searchParams, setSearchParams] = useSearchParams();
   const workInstructionID = searchParams.get("workInstructionID") || "";

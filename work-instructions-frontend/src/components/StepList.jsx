@@ -14,7 +14,24 @@ const StepList = ({ workInstruction }) => {
     <div className="stepList">
       <h5 className="heading">Title: <b>Step List</b></h5>
       <div className="stepDisplayBox">
-        {workInstruction.steps.map((item, index) => {
+      <div className = "buttonStyle">
+            <Accordion>
+              <AccordionSummary
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+                expandIcon={<ExpandMoreIcon/>}
+              >
+                <Typography>{"Hi cutie"}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Typography>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                  malesuada lacus ex, sit amet blandit leo lobortis eget.
+                </Typography>
+              </AccordionDetails>
+            </Accordion>
+          </div>
+        {/* {workInstruction.map((item, index) => {
           return  <div className = "buttonStyle">
             <Accordion>
               <AccordionSummary
@@ -32,7 +49,7 @@ const StepList = ({ workInstruction }) => {
               </AccordionDetails>
             </Accordion>
           </div>
-        })}
+        })} */}
       </div>
       <StepCard workInstruction={workInstruction} />
     </div>
