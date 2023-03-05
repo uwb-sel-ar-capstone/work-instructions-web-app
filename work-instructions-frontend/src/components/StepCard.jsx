@@ -9,11 +9,6 @@ const StepCard = ({ step }) => {
     <div style={{ margin: 'auto', display: 'flex', justifyContent: 'center' }}>
       <Card style={{ width: '30rem' }}>
         <Card.Body>
-          <Card.Title style={{ color: 'black', textAlign: 'center' }}>
-            Step ID: {_id || 'Step Name'}
-            <br />
-            Step Text: {text || 'Step Name'}
-          </Card.Title>
           <Card.Text style={{ color: 'black', textAlign: 'center' }}>
             Componet: {item ? item.name : 'Work Instruction Step Text'}
           </Card.Text>

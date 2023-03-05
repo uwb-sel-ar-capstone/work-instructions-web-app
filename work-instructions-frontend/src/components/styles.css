@@ -1,0 +1,51 @@
+.stepList{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .heading{
+    display: flex;
+    justify-content: center;
+  }
+  
+  .stepInfo{
+    border: "1px solid white";
+  }
+  
+  .stepDisplayBox{
+    height:200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 35rem;
+  }
+  
+  .buttonStyle{
+    padding: 4px;
+    display:flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .button {
+    width:10rem;
+    display: flex;
+    justify-content: center;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
