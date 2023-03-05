@@ -7,56 +7,50 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
+import { useState, useEffect } from 'react';
 
-const StepList = ({ workInstruction }) => {
+const StepList = ({ workInstructionID }) => {
+  const [steps, setSteps] = useState([]);
 
+  useEffect(() => {
+    fetch(`http://localhost:5000/api/v1/steps?workInstructionID=${workInstructionID}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        setSteps(data.steps);
+      })
+      .catch(err => console.log(err));
+  }, [workInstructionID]);
+
+  
   return (
     <div className="stepList">
       <h5 className="heading">Title: <b>Step List</b></h5>
       <div className="stepDisplayBox">
       <div className = "buttonStyle">
-            <Accordion>
-              <AccordionSummary
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-                expandIcon={<ExpandMoreIcon/>}
-              >
-                <Typography>{"Hi cutie"}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                  malesuada lacus ex, sit amet blandit leo lobortis eget.
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
+            {steps.map((item, index) => {
+                return  <div className = "buttonStyle">
+                  <Accordion>
+                    <AccordionSummary
+                      aria-controls="panel1a-content"
+                      id="panel1a-header"
+                      expandIcon={<ExpandMoreIcon/>}
+                    >
+                      <Typography>{item.text}</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Typography>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                        malesuada lacus ex, sit amet blandit leo lobortis eget.
+                      </Typography>
+                    </AccordionDetails>
+                  </Accordion>
+                </div>
+              })}
           </div>
-        {/* {workInstruction.map((item, index) => {
-          return  <div className = "buttonStyle">
-            <Accordion>
-              <AccordionSummary
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-                expandIcon={<ExpandMoreIcon/>}
-              >
-                <Typography>{item.text}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                  malesuada lacus ex, sit amet blandit leo lobortis eget.
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
-          </div>
-        })} */}
       </div>
-      <StepCard workInstruction={workInstruction} />
     </div>
   );
-
 };
 
 export default StepList;
-
-{/*<Button className='button' variant="contained">{item.text}</Button> */}
