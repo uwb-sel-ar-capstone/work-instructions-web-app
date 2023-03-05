@@ -7,7 +7,7 @@ Ensure that the latest version of the [Docker](https://www.docker.com/products/d
 | :exclamation: WARNING |
 | --------------------- |
 
-The `user-fix.bat` and `./dev-fix.sh` scripts in this section will delete ALL Docker images/containers from your machine, not just the ones related to this project.
+The `user-fix.bat` and `./dev-fix.sh` scripts in this section will **delete ALL Docker images/containers from your machine**, not just the ones related to this project.
 
 ### If you are a user updating from an old version.
 
