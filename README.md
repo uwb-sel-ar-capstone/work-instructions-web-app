@@ -4,6 +4,11 @@
 
 Ensure that the latest version of the [Docker](https://www.docker.com/products/docker-desktop/) client is installed on your machine.
 
+| :exclamation: WARNING |
+| --------------------- |
+
+The `user-fix.bat` and `./dev-fix.sh` scripts in this section will delete ALL Docker images/containers from your machine, not just the ones related to this project.
+
 ### If you are a user updating from an old version.
 
 If you are using Windows, and you have downloaded a new update of the web app, you must purge the old containers and images from your machine.
