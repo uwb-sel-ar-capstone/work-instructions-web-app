@@ -6,7 +6,7 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN npm install --silent
+RUN npm install
 
 # Copies files from local directory to app
 COPY . .
