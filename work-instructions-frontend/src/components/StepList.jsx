@@ -40,8 +40,7 @@ const StepList = ({ workInstructionID }) => {
                     </AccordionSummary>
                     <AccordionDetails>
                       <Typography>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                        malesuada lacus ex, sit amet blandit leo lobortis eget.
+                        <StepCard steps={item.id} />
                       </Typography>
                     </AccordionDetails>
                   </Accordion>
