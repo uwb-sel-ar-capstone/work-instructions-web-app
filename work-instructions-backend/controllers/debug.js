@@ -142,8 +142,8 @@ const populateDB = async (req, res) => {
       stepTransistor._id,
     ],
     dimensions: {
-      xLengthCM: 6.49,
-      zLengthCM: 3.048,
+      xLengthCM: 16.3,
+      zLengthCM: 5.5,
     },
   });
 
