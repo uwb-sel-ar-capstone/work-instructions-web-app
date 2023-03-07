@@ -28,7 +28,7 @@ const StepList = ({ workInstructionID }) => {
       <h5 className="heading">Title: <b>Step List</b></h5>
       <div className="stepDisplayBox">
       <div className = "buttonStyle">
-            {steps.map((item, index) => {
+      {steps.map((step) => {
                 return  <div className = "buttonStyle">
                   <Accordion>
                     <AccordionSummary
@@ -36,11 +36,11 @@ const StepList = ({ workInstructionID }) => {
                       id="panel1a-header"
                       expandIcon={<ExpandMoreIcon/>}
                     >
-                      <Typography>{item.text}</Typography>
+                      <Typography>{step.text}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                       <Typography>
-                        <StepCard steps={item.id} />
+                        <StepCard step={step} />
                       </Typography>
                     </AccordionDetails>
                   </Accordion>
