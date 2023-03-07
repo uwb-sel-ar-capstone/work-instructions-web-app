@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "./Image";
 import { useGlobalContext } from "../context";
+import StepCard from "./StepCard";
 
 const Editor = () => {
   const { baseAPIUrl } = useGlobalContext();
@@ -38,7 +39,6 @@ const Editor = () => {
 
   return (
     <>
-      <h1>Hello World</h1>
       <StepList workInstructionID={workInstructionID} />
       <Image
         workInstruction={workInstruction}
