@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "./Image";
 import { useGlobalContext } from "../context";
+import PositionSelector from "./PositionSelector";
 
 const Editor = () => {
   const { baseAPIUrl } = useGlobalContext();

@@ -1,0 +1,22 @@
+#bootstrap-override .position.text {
+  margin-block: 0px;
+  padding-block-start: 0px;
+}
+
+#bootstrap-override .position.card-body {
+  margin-block: 0px;
+  padding-block-start: 0px;
+}
+
+#bootstrap-override .position.card-body .text {
+  padding-block: 0px;
+  margin-block: 0px;
+}
+
+#bootstrap-override .position.card-body .text.start {
+  color: rgb(162, 255, 255);
+}
+
+#bootstrap-override .position.card-body .text.end {
+  color: rgb(167, 255, 167);
+}
