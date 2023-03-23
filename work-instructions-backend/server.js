@@ -10,6 +10,7 @@ const images = require("./routes/images");
 const debug = require("./routes/debug");
 const notFound = require("./middleware/not-found");
 const errorHandlerMiddleware = require("./middleware/error-handler");
+const validatePopulate = require("./middleware/validatePopulate");
 require("dotenv").config();
 const fs = require("fs");
 
@@ -19,6 +20,8 @@ const mongoURI = process.env.MONGO_URI || "mongodb://mongo:27017/";
 
 app.use(cors());
 app.use(express.json());
+
+app.use(validatePopulate);
 
 //routes
 app.use("/api/v1/Steps", steps);

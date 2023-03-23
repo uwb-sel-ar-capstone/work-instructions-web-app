@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const toId = mongoose.Types.ObjectId;
 const checkIds = require("../helpers/check-ids");
 const checkId = require("../helpers/check-id");
+const trueFalse = require("../helpers/true-false");
 
 /**
  * createOrUpdateStepData - helper function that parses the body of a request to generate the data used by mongoose to create or update step documents
@@ -27,11 +28,27 @@ const createOrUpdateStepData = (req) => {
   return stepData;
 };
 
-const getAllSteps = async (req, res) => {
-  let steps = await Step.find({});
-  for (let step of steps) {
+/**
+ * checkAndPopulateStep - checks req.query.populate to see if user wants to receive the populated data. If true or missing, item is populated, otherwise, item is not populated.
+ * @param {*} req
+ * @param {*} step
+ */
+
+const checkAndPopulateStep = async (req, next, step) => {
+  // If shouldPopulate is undefined, it means that the user did not provide a query parameter for populate. In this case, we want to populate the data.
+  let shouldPopulate = trueFalse(req.query.populate);
+  if (shouldPopulate || shouldPopulate === undefined) {
     await step.populate("item");
   }
+};
+
+const getAllSteps = async (req, res, next) => {
+  let steps = await Step.find({});
+
+  for (let step of steps) {
+    await checkAndPopulateStep(req, next, step);
+  }
+
   res.status(200).json({ steps });
 };
 
@@ -43,7 +60,9 @@ const createStep = async (req, res, next) => {
     return next(createCustomError(`No item with id: ${badItemIds}`, 400));
   }
   const stepData = createOrUpdateStepData(req);
-  const step = await (await Step.create(stepData)).populate("item");
+  let step = await Step.create(stepData);
+
+  await checkAndPopulateStep(req, next, step);
 
   res.status(201).json({ step });
 };
@@ -56,7 +75,7 @@ const getStep = async (req, res, next) => {
   }
   const step = await Step.findOne({ _id: stepID });
 
-  await step.populate("items");
+  await checkAndPopulateStep(req, next, step);
 
   res.status(200).json({ step });
 };
@@ -68,7 +87,9 @@ const deleteStep = async (req, res, next) => {
     return next(createCustomError(`No step with id: ${stepID}`, 404));
   }
   const step = await Step.findOneAndDelete({ _id: stepID });
-  await step.populate("item");
+
+  await checkAndPopulateStep(req, next, step);
+
   res.status(200).json({ step });
 };
 
@@ -92,7 +113,7 @@ const updateStep = async (req, res, next) => {
     runValidators: true,
   });
 
-  await step.populate("item");
+  await checkAndPopulateStep(req, next, step);
 
   res.status(200).json({ step });
 };
