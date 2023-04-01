@@ -1,6 +1,4 @@
 import StepList from "./StepList";
-import CreateItem from "./CreateItem";
-
 import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -41,6 +39,7 @@ const Editor = () => {
 
   return (
     <>
+      <h1>Hello World</h1>
       <StepList workInstructionID={workInstructionID} />
       <Image
         workInstruction={workInstruction}
@@ -50,8 +49,6 @@ const Editor = () => {
         setImage={setImage}
         setImageID={setImageID}
       />
-      <CreateItem workInstructionID={workInstructionID} />
-
     </>
   );
 };
