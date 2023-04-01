@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useGlobalContext } from "../context";
+import ItemList from "./ItemList";
 
 const CreateItem = () => {
   const { baseAPIUrl } = useGlobalContext();
+
   const [id, setId] = useState("");
   const [name, setName] = useState("");
-  const [__v, set__v] = useState(0);
+  const [v, setV] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -15,7 +17,7 @@ const CreateItem = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ id, name, __v }),
+        body: JSON.stringify({ id, name, __v: v }),
       });
       const data = await response.json();
       console.log(data);
@@ -25,21 +27,27 @@ const CreateItem = () => {
   };
 
   return (
+    <div>
     <form onSubmit={handleSubmit}>
       <label>
-        Item ID:
+        ID:
         <input type="text" value={id} onChange={(event) => setId(event.target.value)} />
       </label>
       <label>
-        Item name:
+        Name:
         <input type="text" value={name} onChange={(event) => setName(event.target.value)} />
       </label>
       <label>
-        Item __v:
-        <input type="number" value={__v} onChange={(event) => set__v(event.target.value)} />
+        __v:
+        <input type="text" value={v} onChange={(event) => setV(event.target.value)} />
       </label>
       <button type="submit">Create Item</button>
     </form>
+    <h2>Item List</h2>
+    <ItemList />
+  </div>
+
+
   );
 };
 
