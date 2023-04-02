@@ -1,5 +1,6 @@
 import StepList from "./StepList";
 import CreateItem from "./CreateItem";
+import ItemList from "./ItemList";
 
 import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -16,6 +17,8 @@ const Editor = () => {
   const [workInstruction, setWorkInstruction] = useState({});
   const [imageID, setImageID] = useState("");
   const [image, setImage] = useState({});
+
+  const [items, setItems] = useState([]);
 
   const getWorkInstruction = async (url) => {
     try {
@@ -41,17 +44,9 @@ const Editor = () => {
 
   return (
     <>
-      <StepList workInstructionID={workInstructionID} />
-      <Image
-        workInstruction={workInstruction}
-        workInstructionID={workInstructionID}
-        image={image}
-        imageID={imageID}
-        setImage={setImage}
-        setImageID={setImageID}
-      />
-      <CreateItem workInstructionID={workInstructionID} />
-
+  
+      <CreateItem workInstructionID={workInstructionID} setItems={setItems} />
+      <ItemList items={items} />
     </>
   );
 };
