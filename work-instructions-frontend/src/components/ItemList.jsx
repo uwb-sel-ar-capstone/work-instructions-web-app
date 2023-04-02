@@ -33,11 +33,14 @@ const ItemList = () => {
             </Accordion.Body>
           </Accordion.Item>
         ))}
+        <Accordion.Item eventKey="create">
+          <Accordion.Body>
+            <CreateItem setItems={setItems} />
+          </Accordion.Body>
+        </Accordion.Item>
       </Accordion>
-      <CreateItem />
     </div>
   );
 };
 
 export default ItemList;
-
