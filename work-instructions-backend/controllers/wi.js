@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const toId = mongoose.Types.ObjectId;
 const checkIds = require("../helpers/check-ids");
 const checkId = require("../helpers/check-id");
+const trueFalse = require("../helpers/true-false");
 
 /**
  * createOrUpdateWIData - helper function that parses the body of a request to generate the data used by mongoose to create or update WI documents
@@ -53,24 +54,47 @@ const createOrUpdateImageData = (file) => {
 
 /**
  * createPopulateArray - creates a populate array with steps, items, and optionally image populated
+ * @param {Boolean} shouldPopulate
  * @param {Boolean} shouldReturnImageData
  * @returns {Array}
  */
 
-const createPopulateArray = (shouldReturnImageData) => {
-  let populateArray = [{ path: "steps", populate: { path: "item" } }];
+const createPopulateArray = (shouldPopulate, shouldReturnImageData) => {
+  let populateArray = [];
+  if (shouldPopulate) {
+    populateArray.push({ path: "steps", populate: { path: "item" } });
+  }
   if (shouldReturnImageData == "true") {
     populateArray.push({ path: "image" });
   }
   return populateArray;
 };
 
-const getAllWIs = async (req, res) => {
+/**
+ * checkAndPopulateWI - checks req.query.populate to see if user wants to receive the populated data. If true or missing, steps are populated, otherwise, steps are not populated.
+ * @param {*} req
+ * @param {*} step
+ */
+
+const checkAndPopulateWI = async (req, next, wi) => {
+  // If shouldPopulate is undefined, it means that the user did not provide a query parameter for populate. In this case, we want to populate the data.
+  let shouldPopulate = trueFalse(req.query.populate);
+  if (shouldPopulate === undefined) {
+    shouldPopulate = true;
+  }
+  // Could do extra validation and middleware here. Using old strategy for now.
   const shouldReturnImageData = req.query.imageData || "true";
-  const populateArray = createPopulateArray(shouldReturnImageData);
+  const populateArray = createPopulateArray(
+    shouldPopulate,
+    shouldReturnImageData
+  );
+  await wi.populate(populateArray);
+};
+
+const getAllWIs = async (req, res, next) => {
   let wis = await WI.find({});
   for (let wi of wis) {
-    await wi.populate(populateArray);
+    await checkAndPopulateWI(req, next, wi);
   }
   res.status(200).json({ wis });
 };
@@ -100,10 +124,8 @@ const createWI = async (req, res, next) => {
   // Appends the new image data to the work instruction data
   wiData.image = imageItem._id;
 
-  const shouldReturnImageData = req.query.imageData || "true";
-  const populateArray = createPopulateArray(shouldReturnImageData);
-
-  const wi = await (await WI.create(wiData)).populate(populateArray);
+  let wi = await WI.create(wiData);
+  await checkAndPopulateWI(req, next, wi);
 
   res.status(201).json({ wi });
 };
@@ -114,12 +136,9 @@ const getWI = async (req, res, next) => {
   if (!validWIId) {
     return next(createCustomError(`No work instruction with id: ${wiID}`, 404));
   }
-  const wi = await WI.findOne({ _id: wiID });
+  let wi = await WI.findOne({ _id: wiID });
 
-  const shouldReturnImageData = req.query.imageData || "true";
-  const populateArray = createPopulateArray(shouldReturnImageData);
-
-  await wi.populate(populateArray);
+  await checkAndPopulateWI(req, next, wi);
 
   res.status(200).json({ wi });
 };
@@ -130,14 +149,12 @@ const deleteWI = async (req, res, next) => {
   if (!validWIId) {
     return next(createCustomError(`No work instruction with id: ${wiID}`, 404));
   }
-  const wi = await WI.findByIdAndDelete(wiID);
+  let wi = await WI.findByIdAndDelete(wiID);
   //deletes the image that is associated with this wi
   await Image.findByIdAndDelete(wi.image);
 
-  const shouldReturnImageData = req.query.imageData || "true";
-  const populateArray = createPopulateArray(shouldReturnImageData);
+  await checkAndPopulateWI(req, next, wi);
 
-  await wi.populate(populateArray);
   res.status(200).json({ wi });
 };
 
@@ -178,15 +195,12 @@ const updateWI = async (req, res, next) => {
   // Appends the image data to the work instruction data
   wiData.image = imageItem._id;
 
-  const wi = await WI.findOneAndUpdate({ _id: wiID }, wiData, {
+  let wi = await WI.findOneAndUpdate({ _id: wiID }, wiData, {
     new: true, // returns the new object
     runValidators: true,
   });
 
-  const shouldReturnImageData = req.query.imageData || "true";
-  const populateArray = createPopulateArray(shouldReturnImageData);
-
-  await wi.populate(populateArray);
+  await checkAndPopulateWI(req, next, wi);
 
   res.status(200).json({ wi });
 };
