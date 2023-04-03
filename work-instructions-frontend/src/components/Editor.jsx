@@ -5,6 +5,7 @@ import axios from "axios";
 import Image from "./Image";
 import { useGlobalContext } from "../context";
 import StepCard from "./StepCard";
+import ItemList from "./ItemList";
 
 const Editor = () => {
   const { baseAPIUrl } = useGlobalContext();
@@ -39,6 +40,7 @@ const Editor = () => {
 
   return (
     <>
+      <ItemList/>
       <StepList workInstructionID={workInstructionID} />
       <Image
         workInstruction={workInstruction}

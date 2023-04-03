@@ -1,10 +1,11 @@
-.stepList{
+.List{
     display:flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
   }
+
   
   .heading{
     display: flex;
@@ -20,6 +21,12 @@
     overflow-y: auto;
     overflow-x: hidden;
     width: 35rem;
+  }
+  .itemDisplayBox{
+    height:300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 20rem;
   }
   
   .buttonStyle{
