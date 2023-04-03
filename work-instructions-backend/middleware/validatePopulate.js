@@ -17,6 +17,16 @@ const validatePopulate = (req, res, next) => {
       )
     );
   }
+  let shouldPopulateImage = trueFalse(req.query.imageData);
+  // If shouldPopulate is null, it means that the user provided an incorrect query parameter for populate. In this case, we want to throw an error.
+  if (shouldPopulateImage === null) {
+    return next(
+      createCustomError(
+        `Invalid query parameter for imageData: ${req.query.imageData}`,
+        400
+      )
+    );
+  }
   next();
 };
 
