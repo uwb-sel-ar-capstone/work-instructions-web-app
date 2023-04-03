@@ -51,8 +51,9 @@ const StepSchema = new mongoose.Schema({
     validate: validators,
   },
   image: {
-    // TODO: investigate object storage for images
     type: mongoose.Schema.Types.ObjectId,
+    ref: "Image",
+    default: null,
   },
 });
 

@@ -7,6 +7,7 @@ const toId = mongoose.Types.ObjectId;
 const checkIds = require("../helpers/check-ids");
 const checkId = require("../helpers/check-id");
 const trueFalse = require("../helpers/true-false");
+const createOrUpdateImageData = require("../helpers/image");
 
 /**
  * createOrUpdateWIData - helper function that parses the body of a request to generate the data used by mongoose to create or update WI documents
@@ -33,26 +34,6 @@ const createOrUpdateWIData = (bodyData) => {
 };
 
 /**
- * createOrUpdateImageData - helper function that parses the body of a request to generate the data used by mongoose to create or update Image documents
- * @param {Object} req - the request object
- * @returns {Map} - the mongoose readable object of item data. null if invalid input.
- */
-const createOrUpdateImageData = (file) => {
-  if (
-    !file ||
-    (file.mimetype != "image/jpeg" && file.mimetype != "image/png")
-  ) {
-    return null;
-  }
-
-  return {
-    imageData: file.buffer.toString("base64"),
-    encoding: "base64",
-    mimeType: file.mimetype,
-  };
-};
-
-/**
  * createPopulateArray - creates a populate array with steps, items, and optionally image populated
  * @param {Boolean} shouldPopulate
  * @param {Boolean} shouldReturnImageData
@@ -73,6 +54,7 @@ const createPopulateArray = (shouldPopulate, shouldReturnImageData) => {
 /**
  * checkAndPopulateWI - checks req.query.populate to see if user wants to receive the populated data. If true or missing, steps are populated, otherwise, steps are not populated.
  * @param {*} req
+ * @param {*} next
  * @param {*} step
  */
 
@@ -83,7 +65,7 @@ const checkAndPopulateWI = async (req, next, wi) => {
     shouldPopulate = true;
   }
   // Could do extra validation and middleware here. Using old strategy for now.
-  const shouldReturnImageData = req.query.imageData || "true";
+  const shouldReturnImageData = req.query.imagedata || "true";
   const populateArray = createPopulateArray(
     shouldPopulate,
     shouldReturnImageData
