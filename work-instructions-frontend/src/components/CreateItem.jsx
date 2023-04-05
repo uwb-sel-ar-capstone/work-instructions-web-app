@@ -22,7 +22,7 @@ const CreateItem = ({ setItems }) => {
       const updatedResponse = await fetch(`${baseAPIUrl}/items`);
       const updatedData = await updatedResponse.json();
       setItems(updatedData);
-      window.location.reload(); // reload the page
+      window.location.reload(); // reload the page, temp fix to show the data instantly
     } catch (error) {
       console.error(error);
     }
