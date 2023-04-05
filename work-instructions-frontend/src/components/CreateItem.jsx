@@ -14,15 +14,14 @@ const CreateItem = ({ setItems }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({name}),
+        body: JSON.stringify({ name }),
       });
       const data = await response.json();
       console.log(data);
-      // fetch the updated list of items and update the state
-      const updatedResponse = await fetch(`${baseAPIUrl}/items`);
-      const updatedData = await updatedResponse.json();
-      setItems(updatedData);
-      window.location.reload(); // reload the page, temp fix to show the data instantly
+      // Update the state with the newly created item
+      setItems(prevItems => [...prevItems, data.item]);
+      setName(""); // Clear the input field after successful item creation
+      window.location.reload(); // Refresh the page to see the changes, *TEMP FIX*
     } catch (error) {
       console.error(error);
     }
@@ -40,4 +39,3 @@ const CreateItem = ({ setItems }) => {
 };
 
 export default CreateItem;
-
