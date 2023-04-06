@@ -19,10 +19,54 @@ const createOrUpdateImageData = (file) => {
   }
 
   return {
+    imageName: file.originalname,
     imageData: file.buffer.toString("base64"),
     encoding: "base64",
     mimeType: file.mimetype,
   };
+};
+
+const getAllImages = async (req, res, next) => {
+  const images = await Image.find({});
+  res.status(200).json({ images });
+};
+
+const createImage = async (req, res, next) => {
+  // Checks if we have a valid image, if so, creates the json body of the image item
+  if (req.file) {
+    imgData = createOrUpdateImageData(req.file);
+    if (!imgData) {
+      return next(
+        createCustomError(`Image file of type JPEG or PNG required.`, 400)
+      );
+    }
+  } else {
+    return next(
+      createCustomError(`Image file of type JPEG or PNG required.`, 400)
+    );
+  }
+  const image = await Image.create(imgData);
+  res.status(201).json({ image });
+};
+
+const getImage = async (req, res, next) => {
+  const { id: imageID } = req.params;
+  const validImageID = await checkId(imageID, Image);
+  if (!validImageID) {
+    return next(createCustomError(`No image with id: ${imageID}`, 404));
+  }
+  const image = await Image.findOne({ _id: imageID });
+  res.status(200).json({ image });
+};
+
+const deleteImage = async (req, res, next) => {
+  const { id: imageID } = req.params;
+  const validImageID = await checkId(imageID, Image);
+  if (!validImageID) {
+    return next(createCustomError(`No image with id: ${imageID}`, 404));
+  }
+  const image = await Image.findByIdAndDelete(imageID);
+  res.status(200).json({ image });
 };
 
 const updateImage = async (req, res, next) => {
@@ -40,7 +84,9 @@ const updateImage = async (req, res, next) => {
       );
     }
   } else {
-    return next(createCustomError(`Image file of type JPEG or PNG .`, 400));
+    return next(
+      createCustomError(`Image file of type JPEG or PNG required.`, 400)
+    );
   }
 
   const image = await Image.findOneAndUpdate({ _id: imageID }, imgData, {
@@ -51,5 +97,9 @@ const updateImage = async (req, res, next) => {
 };
 
 module.exports = {
+  getAllImages,
+  createImage,
+  getImage,
+  deleteImage,
   updateImage,
 };
