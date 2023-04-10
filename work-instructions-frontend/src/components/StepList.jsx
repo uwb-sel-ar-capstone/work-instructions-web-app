@@ -11,15 +11,14 @@ import { useState, useEffect } from 'react';
 
 const StepList = ({ workInstructionID }) => {
   const [steps, setSteps] = useState([]);
-  //const [currentStep, setCurrentStep] = useState(0);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/v1/steps?workInstructionID=${workInstructionID}`)
+    fetch(`http://localhost:5000/api/v1/workinstructions/${workInstructionID}`)
       .then(res => res.json())
       .then(data => {
         console.log(data);
-        //console.log(data.steps);
-        setSteps(data.steps);
+        setSteps(data.wi.steps);
+        console.log(steps);
       })
       .catch(err => console.log(err));
   }, [workInstructionID]);
