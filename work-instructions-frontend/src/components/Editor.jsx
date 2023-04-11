@@ -129,7 +129,7 @@ const Editor = () => {
             />
           </Col>
         </Row>
-        <Row>
+        <Row className="justify-content-md-center">
           <Col xs="auto" md="auto">
             <div
               onMouseEnter={handleMouseEnter}

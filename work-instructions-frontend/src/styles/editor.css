@@ -1,3 +1,9 @@
+#bootstrap-override .save-container {
+  display: flex;
+  flex-direction: column;
+}
+#bootstrap-override .save-button {
+}
 #bootstrap-override .hover-div {
   background-color: rgba(17, 11, 17, 1);
   padding: 0.25rem;
