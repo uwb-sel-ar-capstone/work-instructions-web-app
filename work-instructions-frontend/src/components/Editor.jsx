@@ -6,6 +6,7 @@ import Image from "./Image";
 import { useGlobalContext } from "../context";
 import StepCard from "./StepCard";
 import ItemList from "./ItemList";
+import ListSteps from "./ListSteps";
 
 const Editor = () => {
   const { baseAPIUrl } = useGlobalContext();
@@ -41,6 +42,7 @@ const Editor = () => {
   return (
     <>
       <ItemList/>
+      <ListSteps/>
       <StepList workInstructionID={workInstructionID} />
       <Image
         workInstruction={workInstruction}
