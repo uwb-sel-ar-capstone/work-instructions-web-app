@@ -1,0 +1,17 @@
+#bootstrap-override .hover-div {
+  background-color: rgba(17, 11, 17, 1);
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+}
+#bootstrap-override .hover-div .error {
+  color: rgb(255, 255, 255);
+  margin-bottom: 0px;
+}
+
+#bootstrap-override .hover-div .error.title {
+  color: rgb(255, 71, 71);
+}
+#bootstrap-override ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}

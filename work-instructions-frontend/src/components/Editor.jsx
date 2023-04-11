@@ -1,4 +1,3 @@
-import StepList from "./StepList";
 import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -8,12 +7,15 @@ import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import "../styles/editor.css";
 
 const Editor = () => {
+  const [wiProblems, setWiProblems] = useState([]);
   const { baseAPIUrl } = useGlobalContext();
   // eslint-disable-next-line
   const [searchParams, setSearchParams] = useSearchParams();
   const workInstructionID = searchParams.get("workInstructionID") || "";
+
   const [workInstruction, setWorkInstruction] = useState({
     dimensions: {
       xLengthCM: 0,
@@ -31,7 +33,7 @@ const Editor = () => {
   });
   const [imageID, setImageID] = useState("");
   const [image, setImage] = useState({}); // image is stored here as this is a large file and we don't want to repeatedly call for in child components
-  const [isCreateNew, setIsCreateNew] = useState(workInstructionID === ""); // If there is no id, then this is a new work instruction
+  const [isValidWorkInstruction, setIsValidWorkInstruction] = useState(false);
 
   const getWorkInstruction = async (url) => {
     try {
@@ -49,8 +51,11 @@ const Editor = () => {
       console.log(error.response);
     }
   };
+
+  // Download existing WI if there is an ID
   useEffect(() => {
-    if (isCreateNew) {
+    // If its a new work instruction, then we don't need to fetch anything
+    if (workInstructionID === "") {
       return;
     }
     getWorkInstruction(
@@ -58,29 +63,60 @@ const Editor = () => {
     );
   }, [baseAPIUrl, workInstructionID]);
 
-  const checkValidWorkInstruction = () => {
-    console.log(workInstruction);
-    if (workInstruction.dimensions.xLengthCM === 0) {
-      return false;
+  // Check if the work instruction is valid
+  useEffect(() => {
+    let isValid = true;
+    // Code is clean if we keep resetting array on this check. Efficiency is not big a concern here.
+    let problems = [];
+    if (
+      workInstruction.dimensions.xLengthCM === 0 ||
+      workInstruction.dimensions.xLengthCM === null
+    ) {
+      isValid = false;
+      problems.push("X length is 0");
     }
-    if (workInstruction.dimensions.zLengthCM === 0) {
-      return false;
+
+    if (
+      workInstruction.dimensions.zLengthCM === 0 ||
+      workInstruction.dimensions.zLengthCM === null
+    ) {
+      isValid = false;
+      problems.push("Y length is 0");
     }
+
     if (workInstruction.name === "") {
-      return false;
+      isValid = false;
+      problems.push("Name is empty");
     }
+
     if (workInstruction.steps.length === 0) {
-      return false;
+      isValid = false;
+      problems.push("No steps");
     }
+
     if (workInstruction.image._id === "") {
-      return false;
+      isValid = false;
+      problems.push("No image");
     }
-    return true;
+
+    setWiProblems(problems);
+    setIsValidWorkInstruction(isValid);
+  }, [workInstruction]);
+
+  // Error Hovering
+  const [isHover, setIsHover] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHover(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHover(false);
   };
 
   return (
     <>
-      <Container gap={3} classname="col-md-5 mx-auto">
+      <Container gap={3} className="col-md-5 mx-auto">
         <Row className="justify-content-md-center">
           <Col md="auto">
             <Image
@@ -93,11 +129,36 @@ const Editor = () => {
             />
           </Col>
         </Row>
-        <Row className="justify-content-md-center">
+        <Row>
           <Col xs="auto" md="auto">
-            <Button variant="primary" disabled={!checkValidWorkInstruction()}>
-              Save
-            </Button>
+            <div
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              className="save-container"
+            >
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={!isValidWorkInstruction}
+                className="save-button"
+              >
+                Save
+              </Button>
+              {isHover && wiProblems.length > 0 && (
+                <div className="hover-div">
+                  <h1 className="error title">Error:</h1>
+                  <ul>
+                    {wiProblems.map((problem, idx) => {
+                      return (
+                        <li className="error" key={idx}>
+                          {problem}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )}
+            </div>
           </Col>
         </Row>
       </Container>
