@@ -8,6 +8,8 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import "../styles/editor.css";
+import createNavigateToEditor from "../helpers/NavigateToEditor";
+import { useNavigate } from "react-router-dom";
 
 const Editor = () => {
   const [wiProblems, setWiProblems] = useState([]);
@@ -114,6 +116,82 @@ const Editor = () => {
     setIsHover(false);
   };
 
+  const handleSave = async (url, data, axiosFcn) => {
+    try {
+      const response = await axiosFcn(url, data);
+      if (response.data.wi) {
+        return response;
+      }
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  const navigateToEditor = createNavigateToEditor(
+    useNavigate(),
+    workInstruction._id
+  );
+  // Button Click Handler
+
+  const navigate = useNavigate();
+
+  const LoadingButton = () => {
+    const [isLoading, setLoading] = useState(false);
+
+    useEffect(() => {
+      if (isLoading) {
+        // if we don't have a work instruction ID, then we need to use the create new work instruction endpoint
+        if (workInstructionID === "") {
+          handleSave(
+            `${baseAPIUrl}/workinstructions`,
+            {
+              name: workInstruction.name,
+              dimensions: workInstruction.dimensions,
+              steps: workInstruction.steps,
+              image: imageID,
+            },
+            axios.post
+          ).then((response) => {
+            setLoading(false);
+            navigateToEditor(response.data.wi._id);
+          });
+        }
+        // otherwise we can use the update work instruction endpoint
+        else {
+          handleSave(
+            `${baseAPIUrl}/workinstructions/${workInstructionID}`,
+            {
+              name: workInstruction.name,
+              dimensions: workInstruction.dimensions,
+              steps: workInstruction.steps,
+              image: imageID,
+            },
+            axios.patch
+          ).then((response) => {
+            setLoading(false);
+
+            navigateToEditor(response.data.wi._id);
+            // Refreshing page just to be sure that everything is up to date. This may be a redundant step.
+            navigate(0);
+          });
+        }
+      }
+    }, [isLoading]);
+    const handleClick = () => setLoading(true);
+
+    return (
+      <Button
+        type="submit"
+        variant="primary"
+        disabled={!isValidWorkInstruction}
+        className="save-button"
+        onClick={!isLoading ? handleClick : null}
+      >
+        Save
+      </Button>
+    );
+  };
+
   return (
     <>
       <Container gap={3} className="col-md-5 mx-auto">
@@ -136,14 +214,7 @@ const Editor = () => {
               onMouseLeave={handleMouseLeave}
               className="save-container"
             >
-              <Button
-                type="submit"
-                variant="primary"
-                disabled={!isValidWorkInstruction}
-                className="save-button"
-              >
-                Save
-              </Button>
+              <LoadingButton />
               {isHover && wiProblems.length > 0 && (
                 <div className="hover-div">
                   <h1 className="error title">Error:</h1>
