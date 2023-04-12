@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "./Image";
 import { useGlobalContext } from "../context";
-import Button from "react-bootstrap/Button";
+import LoadingButton from "./LoadingButton";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -135,61 +135,45 @@ const Editor = () => {
 
   const navigate = useNavigate();
 
-  const LoadingButton = () => {
-    const [isLoading, setLoading] = useState(false);
-
-    useEffect(() => {
-      if (isLoading) {
-        // if we don't have a work instruction ID, then we need to use the create new work instruction endpoint
-        if (workInstructionID === "") {
-          handleSave(
-            `${baseAPIUrl}/workinstructions`,
-            {
-              name: workInstruction.name,
-              dimensions: workInstruction.dimensions,
-              steps: workInstruction.steps,
-              image: imageID,
-            },
-            axios.post
-          ).then((response) => {
-            setLoading(false);
-            navigateToEditor(response.data.wi._id);
-          });
-        }
-        // otherwise we can use the update work instruction endpoint
-        else {
-          handleSave(
-            `${baseAPIUrl}/workinstructions/${workInstructionID}`,
-            {
-              name: workInstruction.name,
-              dimensions: workInstruction.dimensions,
-              steps: workInstruction.steps,
-              image: imageID,
-            },
-            axios.patch
-          ).then((response) => {
-            setLoading(false);
-
-            navigateToEditor(response.data.wi._id);
-            // Refreshing page just to be sure that everything is up to date. This may be a redundant step.
-            navigate(0);
-          });
-        }
+  // isLoading, setLoading defined by LoadingButton
+  const saveButtonFunction = (isLoading, setLoading) => {
+    if (isLoading) {
+      // if we don't have a work instruction ID, then we need to use the create new work instruction endpoint
+      if (workInstructionID === "") {
+        handleSave(
+          `${baseAPIUrl}/workinstructions`,
+          {
+            name: workInstruction.name,
+            dimensions: workInstruction.dimensions,
+            steps: workInstruction.steps,
+            image: imageID,
+          },
+          axios.post
+        ).then((response) => {
+          setLoading(false);
+          navigateToEditor(response.data.wi._id);
+        });
       }
-    }, [isLoading]);
-    const handleClick = () => setLoading(true);
+      // otherwise we can use the update work instruction endpoint
+      else {
+        handleSave(
+          `${baseAPIUrl}/workinstructions/${workInstructionID}`,
+          {
+            name: workInstruction.name,
+            dimensions: workInstruction.dimensions,
+            steps: workInstruction.steps,
+            image: imageID,
+          },
+          axios.patch
+        ).then((response) => {
+          setLoading(false);
 
-    return (
-      <Button
-        type="submit"
-        variant="primary"
-        disabled={!isValidWorkInstruction}
-        className="save-button"
-        onClick={!isLoading ? handleClick : null}
-      >
-        Save
-      </Button>
-    );
+          navigateToEditor(response.data.wi._id);
+          // Refreshing page just to be sure that everything is up to date. This may be a redundant step.
+          navigate(0);
+        });
+      }
+    }
   };
 
   return (
@@ -214,7 +198,10 @@ const Editor = () => {
               onMouseLeave={handleMouseLeave}
               className="save-container"
             >
-              <LoadingButton />
+              <LoadingButton
+                saveButtonFunction={saveButtonFunction}
+                isValid={isValidWorkInstruction}
+              />
               {isHover && wiProblems.length > 0 && (
                 <div className="hover-div">
                   <h1 className="error title">Error:</h1>
