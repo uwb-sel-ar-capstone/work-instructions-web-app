@@ -47,6 +47,10 @@ const createPopulateArray = (shouldPopulate, shouldReturnImageData) => {
   }
   if (shouldReturnImageData == "true") {
     populateArray.push({ path: "image" });
+    // if we are populating steps, we and we are returning image data:
+    if (shouldPopulate) {
+      populateArray.push({ path: "steps", populate: { path: "image" } });
+    }
   }
   return populateArray;
 };
