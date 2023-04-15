@@ -42,15 +42,19 @@ const createOrUpdateWIData = (bodyData) => {
 
 const createPopulateArray = (shouldPopulate, shouldReturnImageData) => {
   let populateArray = [];
-  if (shouldPopulate) {
-    populateArray.push({ path: "steps", populate: { path: "item" } });
-  }
+  let stepsPopulateArray = [];
+
   if (shouldReturnImageData == "true") {
+    // Populate image data for steps - will only actually populate if shouldPopulate is true (otherwise the step is just an ID)
+    stepsPopulateArray.push({ path: "image" });
+    // Populate image data for work instruction
     populateArray.push({ path: "image" });
-    // if we are populating steps, we and we are returning image data:
-    if (shouldPopulate) {
-      populateArray.push({ path: "steps", populate: { path: "image" } });
-    }
+  }
+  if (shouldPopulate) {
+    // Adds the item to the stepsPopulateArray first (before the stepsPopulateArray is added to the steps inside the populateArray)
+    stepsPopulateArray.push({ path: "item" });
+    // Adds the steps to the populate array, with the stepsPopulateArray as the populate array for the steps
+    populateArray.push({ path: "steps", populate: stepsPopulateArray });
   }
   return populateArray;
 };
