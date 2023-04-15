@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Image from "./Image";
+// import Image from "./Image";
 import { useGlobalContext } from "../context";
 import LoadingButton from "./LoadingButton";
 import Container from "react-bootstrap/Container";
@@ -10,6 +10,7 @@ import Col from "react-bootstrap/Col";
 import "../styles/editor.css";
 import createNavigateToEditor from "../helpers/NavigateToEditor";
 import { useNavigate } from "react-router-dom";
+import ImageUploader from "./ImageUploader";
 
 const Editor = () => {
   const [wiProblems, setWiProblems] = useState([]);
@@ -34,7 +35,7 @@ const Editor = () => {
     },
   });
   const [imageID, setImageID] = useState("");
-  const [image, setImage] = useState({}); // image is stored here as this is a large file and we don't want to repeatedly call for in child components
+  // const [image, setImage] = useState({}); // image is stored here as this is a large file and we don't want to repeatedly call for in child components
   const [isValidWorkInstruction, setIsValidWorkInstruction] = useState(false);
 
   const getWorkInstruction = async (url) => {
@@ -42,11 +43,11 @@ const Editor = () => {
       const { data } = await axios(url);
       if (data.wi) {
         setWorkInstruction(data.wi);
-        setImage(data.wi.image);
+        // setImage(data.wi.image);
         setImageID(data.wi.image._id); // only works if imageData=false
       } else {
         setWorkInstruction({});
-        setImage({});
+        // setImage({});
         setImageID("");
       }
     } catch (error) {
@@ -181,14 +182,15 @@ const Editor = () => {
       <Container gap={3} className="col-md-5 mx-auto">
         <Row className="justify-content-md-center">
           <Col md="auto">
-            <Image
+            <ImageUploader />
+            {/* <Image
               workInstruction={workInstruction}
               workInstructionID={workInstructionID}
               image={image}
               imageID={imageID}
               setImage={setImage}
               setImageID={setImageID}
-            />
+            /> */}
           </Col>
         </Row>
         <Row className="justify-content-md-center">
