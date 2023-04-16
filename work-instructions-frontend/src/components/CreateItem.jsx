@@ -30,7 +30,7 @@ const CreateItem = ({ setItems }) => {
   return (
     <Form onSubmit={handleSubmit}>
       <Form.Group>
-      <h3>Item List</h3>
+      <h3>Create Item</h3>
         <Form.Control
          type="text" 
          value={name} 
