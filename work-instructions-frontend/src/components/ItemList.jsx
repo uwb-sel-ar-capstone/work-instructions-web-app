@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useGlobalContext } from "../context";
-import { Button, Modal } from "react-bootstrap";
-import CreateSteps from "./CreateSteps";
+import { Accordion, Button, Modal } from "react-bootstrap";
+import CreateItem from "./CreateItem";
 
 const ItemList = () => {
   const { baseAPIUrl } = useGlobalContext(); // get the baseAPIUrl from the global context
-  const [steps, setSteps] = useState([]);
+  const [items, setItems] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleteStepId, setDeleteStepId] = useState(null);
-  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [deleteItemId, setDeleteItemId] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${baseAPIUrl}/steps`);
+        const response = await fetch(`${baseAPIUrl}/items`);
         const data = await response.json();
-        setSteps(data.steps); // set only the steps array from the response
+        setItems(data.items); // set only the items array from the response
       } catch (error) {
         console.error(error);
       }
@@ -23,49 +22,81 @@ const ItemList = () => {
     fetchData();
   }, [baseAPIUrl]);
 
-  const handleDelete = async (stepId) => {
+  const handleDelete = async () => {
     try {
-      const response = await fetch(`${baseAPIUrl}/steps/${stepId}`, {
+      const response = await fetch(`${baseAPIUrl}/items/${deleteItemId}`, {
         method: "DELETE",
       });
       const data = await response.json();
       console.log(data); // handle the response as needed
 
-      // Fetch the updated list of steps and update the state
-      const updatedResponse = await fetch(`${baseAPIUrl}/steps`);
+      // Fetch the updated list of items and update the state
+      const updatedResponse = await fetch(`${baseAPIUrl}/items`);
       const updatedData = await updatedResponse.json();
-      setSteps(updatedData.steps);
+      setItems(updatedData.items);
+
+      // Close the delete modal
+      setShowDeleteModal(false);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleCreate = (newStep) => {
-    // Update the state with the newly created step
-    setSteps((prevSteps) => [...prevSteps, newStep]);
+  const handleDeleteModalShow = (itemId) => {
+    setShowDeleteModal(true);
+    setDeleteItemId(itemId);
+  };
+
+  const handleDeleteModalClose = () => {
+    setShowDeleteModal(false);
+    setDeleteItemId(null);
+  };
+
+  const handleCreateItem = (newItem) => {
+    // Update the state with the newly created item
+    setItems(prevItems => [...prevItems, newItem]);
   };
 
   return (
     <div>
-      <h2>Steps</h2>
-      <ul>
-        {steps.map((step) => (
-          <li key={step._id}>
-            {step.name}{" "}
-            <Button variant="danger" onClick={() => handleDelete(step._id)}>
-              Delete
-            </Button>
-          </li>
+      <h2>Items</h2>
+      <Accordion>
+        {items.map((item) => (
+          <Accordion.Item key={item._id} eventKey={item._id}>
+            <Accordion.Header>{item.name}</Accordion.Header>
+            <Accordion.Body>
+              <p>ID: {item._id}</p>
+              <p>V: {item.__v}</p>
+              <Button
+                variant="danger"
+                onClick={() => handleDeleteModalShow(item._id)}
+              >
+                Delete
+              </Button>
+            </Accordion.Body>
+          </Accordion.Item>
         ))}
-      </ul>
-      <Button onClick={() => setShowCreateModal(true)}>Create Step</Button>
-      <Modal show={showCreateModal} onHide={() => setShowCreateModal(false)}>
+        <Accordion.Item eventKey="create">
+          <Accordion.Body>
+            <CreateItem setItems={handleCreateItem} />
+          </Accordion.Body>
+        </Accordion.Item>
+      </Accordion>
+
+      {/* Delete confirmation modal */}
+      <Modal show={showDeleteModal} onHide={handleDeleteModalClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Create Step</Modal.Title>
+          <Modal.Title>Confirm Delete</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <CreateSteps onCreate={handleCreate} />
-        </Modal.Body>
+        <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleDeleteModalClose}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Delete
+          </Button>
+        </Modal.Footer>
       </Modal>
     </div>
   );

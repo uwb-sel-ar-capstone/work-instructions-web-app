@@ -46,7 +46,8 @@ const Editor = () => {
 
   return (
     <>
-      <CreateSteps setSteps={setSteps} items={items} />
+      {/* <CreateItem setItems={setItems} items={items} />  */}
+      <CreateSteps setSteps={setSteps} items={steps} /> 
       <ItemList items={items} />
     </>
   );
