@@ -30,11 +30,20 @@ const CreateItem = ({ setItems }) => {
   return (
     <Form onSubmit={handleSubmit}>
       <Form.Group>
-        <Form.Label style={{fontSize: "25px"}}>Item Name:</Form.Label>
-        <input type="text" value={name} onChange={(event) => setName(event.target.value)} style={{ width: "25%" }} />
-        <Button type="submit" style={{height: "30px", lineHeight: "15px", fontSize: "15px"}}>Create Item</Button>
+      <h3>Item List</h3>
+        <Form.Control
+         type="text" 
+         value={name} 
+         onChange={(event) => setName(event.target.value)}/>
+         <br/ >
+         <Button variant="primary" type="submit">
+          Create Item
+        </Button>
+        <hr/ >
       </Form.Group>
     </Form>
+
+
   );
 };
 

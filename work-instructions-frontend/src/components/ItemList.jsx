@@ -59,7 +59,7 @@ const ItemList = () => {
 
   return (
     <div>
-      <h2>Items</h2>
+      <h3>Item List</h3>
       <Accordion>
         {items.map((item) => (
           <Accordion.Item key={item._id} eventKey={item._id}>

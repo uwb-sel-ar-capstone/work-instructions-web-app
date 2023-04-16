@@ -1,4 +1,3 @@
-import StepList from "./StepList";
 import CreateItem from "./CreateItem";
 import CreateSteps from "./CreateSteps"; // Import the CreateSteps component
 import ItemList from "./ItemList";
@@ -46,8 +45,8 @@ const Editor = () => {
 
   return (
     <>
-      {/* <CreateItem setItems={setItems} items={items} />  */}
       <CreateSteps setSteps={setSteps} items={steps} /> 
+      <CreateItem setItems={setItems} items={items} />  
       <ItemList items={items} />
     </>
   );
