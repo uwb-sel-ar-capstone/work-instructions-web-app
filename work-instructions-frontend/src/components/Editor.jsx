@@ -11,6 +11,8 @@ import "../styles/editor.css";
 import createNavigateToEditor from "../helpers/NavigateToEditor";
 import { useNavigate } from "react-router-dom";
 import ImageUploader from "./ImageUploader";
+import AllStepList from "./AllStepList";
+import StepCard from "./StepCard";
 
 const Editor = () => {
   const [wiProblems, setWiProblems] = useState([]);
@@ -177,11 +179,17 @@ const Editor = () => {
     }
   };
 
+  const [selection, setSelection] = useState({});
+
+  useEffect(() => {}, [selection]);
+
   return (
     <>
       <Container gap={3} className="col-md-5 mx-auto">
         <Row className="justify-content-md-center">
           <Col md="auto">
+            <StepCard baseImage={workInstruction.image} />
+            <AllStepList selection={setSelection} />
             <ImageUploader />
             {/* <Image
               workInstruction={workInstruction}

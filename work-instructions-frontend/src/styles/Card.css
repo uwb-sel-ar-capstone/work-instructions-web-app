@@ -20,3 +20,7 @@
 #bootstrap-override .position.card-body .text.end {
   color: rgb(167, 255, 167);
 }
+
+#bootstrap-override .card {
+  background-color: rgba(17, 11, 17, 1);
+}

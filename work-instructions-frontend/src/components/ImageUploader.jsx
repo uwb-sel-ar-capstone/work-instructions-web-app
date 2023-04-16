@@ -4,7 +4,7 @@ import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import { useGlobalContext } from "../context";
 import axios from "axios";
-import "../styles/Image.css";
+import "../styles/Card.css";
 
 const ImageUploader = () => {
   const { baseAPIUrl } = useGlobalContext();
@@ -58,10 +58,7 @@ const ImageUploader = () => {
 
   return (
     <div id="bootstrap-overrides">
-      <Card
-        className="my-2"
-        style={{ width: "24rem", backgroundColor: "rgba(17, 11, 17, 1)" }}
-      >
+      <Card className="my-2">
         <Card.Img variant="top" src={imageURL} alt={fileName} />
         <Card.Body>
           <Card.Title>{`File Name: ${fileName}`}</Card.Title>
