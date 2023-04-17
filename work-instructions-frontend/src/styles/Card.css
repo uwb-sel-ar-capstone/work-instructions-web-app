@@ -1,3 +1,6 @@
+#bootstrap-override .card {
+  color: white;
+}
 #bootstrap-override .position.text {
   margin-block: 0px;
   padding-block-start: 0px;

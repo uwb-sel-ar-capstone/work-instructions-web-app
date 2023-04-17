@@ -7,12 +7,14 @@ import LoadingButton from "./LoadingButton";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import "../styles/Card.css";
 import "../styles/editor.css";
 import createNavigateToEditor from "../helpers/NavigateToEditor";
 import { useNavigate } from "react-router-dom";
 import ImageUploader from "./ImageUploader";
-import AllStepList from "./AllStepList";
-import StepCard from "./StepCard";
+import WIStepList from "./WIStepList";
+import Form from "react-bootstrap/Form";
+import Card from "react-bootstrap/Card";
 
 const Editor = () => {
   const [wiProblems, setWiProblems] = useState([]);
@@ -36,6 +38,8 @@ const Editor = () => {
       encoding: "",
     },
   });
+
+  const [stepIDs, setStepIDs] = useState(workInstruction.steps);
   const [imageID, setImageID] = useState("");
   // const [image, setImage] = useState({}); // image is stored here as this is a large file and we don't want to repeatedly call for in child components
   const [isValidWorkInstruction, setIsValidWorkInstruction] = useState(false);
@@ -45,6 +49,7 @@ const Editor = () => {
       const { data } = await axios(url);
       if (data.wi) {
         setWorkInstruction(data.wi);
+        setStepIDs(data.wi.steps);
         // setImage(data.wi.image);
         setImageID(data.wi.image._id); // only works if imageData=false
       } else {
@@ -56,6 +61,13 @@ const Editor = () => {
       console.log(error.response);
     }
   };
+
+  // Listen to changes in the stepIDs array and update the work instruction
+  useEffect(() => {
+    setWorkInstruction((prev) => {
+      return { ...prev, steps: stepIDs };
+    });
+  }, [stepIDs]);
 
   // Download existing WI if there is an ID
   useEffect(() => {
@@ -179,17 +191,40 @@ const Editor = () => {
     }
   };
 
-  const [selection, setSelection] = useState({});
-
-  useEffect(() => {}, [selection]);
-
   return (
     <>
       <Container gap={3} className="col-md-5 mx-auto">
         <Row className="justify-content-md-center">
-          <Col md="auto">
-            <StepCard baseImage={workInstruction.image} />
-            <AllStepList selection={setSelection} />
+          <Col>
+            <Card className={"card my-2"}>
+              <Card.Body>
+                <Card.Title>WI Title:</Card.Title>
+                <Form>
+                  <Form.Group controlId="formBasicText">
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter Title"
+                      value={workInstruction.name}
+                      onChange={(e) => {
+                        e.preventDefault();
+                        setWorkInstruction((prev) => {
+                          return { ...prev, name: e.target.value };
+                        });
+                      }}
+                    />
+                  </Form.Group>
+                </Form>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+        <Row className="justify-content-md-center">
+          <Col>
+            <WIStepList
+              stepIDs={stepIDs}
+              setStepIDs={setStepIDs}
+              baseImage={workInstruction.image}
+            />
             <ImageUploader />
             {/* <Image
               workInstruction={workInstruction}
@@ -202,7 +237,7 @@ const Editor = () => {
           </Col>
         </Row>
         <Row className="justify-content-md-center">
-          <Col xs="auto" md="auto">
+          <Col>
             <div
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}

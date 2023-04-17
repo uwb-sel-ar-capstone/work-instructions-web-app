@@ -14,7 +14,7 @@ import AllItemList from "./AllItemList";
 
 const StepCard = ({ stepID, baseImage }) => {
   const { baseAPIUrl } = useGlobalContext();
-  const url = `${baseAPIUrl}/steps/${stepID}?populate=true?imageData=true`;
+  const url = `${baseAPIUrl}/steps/${stepID}?populate=false&imageData=true`;
   const [step, setStep] = useState({
     _id: "",
     text: "",
@@ -61,13 +61,13 @@ const StepCard = ({ stepID, baseImage }) => {
 
   const [itemName, setItemName] = useState("");
 
-  // This function gets the item name from the item ID, and sets the itemName state to the name of the item.
+  // This function gets the item name from the item ID, and sets the itemName state to the name of the item.\
 
   useEffect(() => {
-    const getItemNameFromID = (itemID) => {
+    const getItemNameFromID = async (itemID) => {
       try {
         const itemUrl = `${baseAPIUrl}/items/${itemID}`;
-        const { data } = axios.get(itemUrl);
+        const { data } = await axios.get(itemUrl);
         if (data.item) {
           setItemName(data.item.name);
         }
