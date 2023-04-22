@@ -25,6 +25,15 @@ const Editor = () => {
   const workInstructionID = searchParams.get("workInstructionID") || "";
   const [currentStepID, setCurrentStepID] = useState("");
 
+  // Need to pass this wrapped function down to eliminate the async behavior of setCurrentStepID in child.
+  const handleStepSelection = (stepID) => {
+    setCurrentStepID(stepID);
+  };
+
+  const handleStepIDsChange = (stepIDs) => {
+    setStepIDs(stepIDs);
+  };
+
   const [workInstruction, setWorkInstruction] = useState({
     dimensions: {
       xLengthCM: 0,
@@ -279,8 +288,9 @@ const Editor = () => {
               <Card.Body>
                 <WIStepList
                   stepIDs={stepIDs}
-                  setStepIDs={setStepIDs}
-                  setCurrentStepID={setCurrentStepID}
+                  setStepIDs={handleStepIDsChange}
+                  currentStepID={currentStepID}
+                  setCurrentStepID={handleStepSelection}
                 />
               </Card.Body>
             </Card>

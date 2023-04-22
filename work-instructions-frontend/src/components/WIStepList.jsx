@@ -2,9 +2,15 @@ import { useState, useEffect } from "react";
 import ListGroup from "react-bootstrap/ListGroup";
 import "../styles/ListGroup.css";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import CloseButton from "react-bootstrap/CloseButton";
 
-const WIStepList = ({ stepIDs, setStepIDs, setCurrentStepID }) => {
-  // 24 characters in UUID by default
+const WIStepList = ({
+  stepIDs,
+  setStepIDs,
+  currentStepID,
+  setCurrentStepID,
+}) => {
+  // 24 characters in UUID by default. Will break if UUIDs are not 24 characters in length.
 
   const origLength = stepIDs.length > 0 ? stepIDs[0].length : 24;
   const [uniqueStepIDs, setUniqueStepIDs] = useState([]);
@@ -17,6 +23,38 @@ const WIStepList = ({ stepIDs, setStepIDs, setCurrentStepID }) => {
       })
     );
   }, [stepIDs]);
+
+  const TextWrapper = ({ text, onClick }) => {
+    return (
+      <div onClick={onClick} className="text-wrapper">
+        {text}
+      </div>
+    );
+  };
+
+  const handleDelete = (uniqueStepID, index) => {
+    // splice the step at index from the stepIDs array
+    const newStepIDs = [...stepIDs];
+    newStepIDs.splice(index, 1);
+    setStepIDs(newStepIDs);
+
+    // if there are no more steps, set the currentStepID to an empty string
+    if (newStepIDs.length === 0) {
+      setCurrentStepID("");
+      return;
+    }
+    let newIndex = index - 1;
+    if (newIndex < 0) {
+      newIndex = 0;
+    }
+    const newID = newStepIDs[newIndex];
+    setCurrentStepID(newID);
+  };
+
+  const getOrigStepID = (uniqueStepID) => {
+    return uniqueStepID.slice(0, origLength);
+  };
+
   return (
     <DragDropContext
       onDragEnd={(result) => {
@@ -36,9 +74,9 @@ const WIStepList = ({ stepIDs, setStepIDs, setCurrentStepID }) => {
         newUniqueStepOrder.splice(source.index, 1);
         newUniqueStepOrder.splice(destination.index, 0, draggableId);
         // for every item in the unique step ids array, remove the index from the end of the string. Store each result in a new array
-        const newStepOrder = newUniqueStepOrder.map((stepID) => {
+        const newStepOrder = newUniqueStepOrder.map((uniqueID) => {
           // Keep the first origLength characters of the string
-          return stepID.slice(0, origLength);
+          return getOrigStepID(uniqueID);
         });
         setStepIDs(newStepOrder);
       }}
@@ -47,7 +85,10 @@ const WIStepList = ({ stepIDs, setStepIDs, setCurrentStepID }) => {
         <Droppable droppableId={"droppable"}>
           {(provided, snapshot) => (
             <ListGroup ref={provided.innerRef} {...provided.droppableProps}>
-              {stepIDs.map((stepID, index) => {
+              {uniqueStepIDs.map((stepID, index) => {
+                const active = {
+                  active: getOrigStepID(stepID) === currentStepID,
+                };
                 return (
                   <Draggable key={stepID} draggableId={stepID} index={index}>
                     {(provided, snapshot) => (
@@ -57,13 +98,23 @@ const WIStepList = ({ stepIDs, setStepIDs, setCurrentStepID }) => {
                         {...provided.dragHandleProps}
                       >
                         <ListGroup.Item
-                          onClick={() => {
-                            setCurrentStepID(stepID);
-                          }}
                           as="li"
                           eventKey={index}
+                          style={{ display: "flex" }}
+                          {...active}
                         >
-                          {stepID}
+                          <TextWrapper
+                            text={stepID}
+                            onClick={() => {
+                              const origStepID = getOrigStepID(stepID);
+                              setCurrentStepID(origStepID);
+                            }}
+                          />
+                          <CloseButton
+                            onClick={() => {
+                              handleDelete(stepID, index);
+                            }}
+                          />
                         </ListGroup.Item>
                       </div>
                     )}
