@@ -203,8 +203,8 @@ const Editor = () => {
         <Row className="justify-content-md-center">
           <Col>
             <Card className={"card my-2"}>
+              <Card.Header as="h3">Work Instruction Title</Card.Header>
               <Card.Body>
-                <Card.Title>Work Instruction Title:</Card.Title>
                 <Form>
                   <Form.Group controlId="formBasicText">
                     <Form.Control
@@ -224,8 +224,8 @@ const Editor = () => {
             </Card>
 
             <Card className={"card my-2"}>
+              <Card.Header as="h3">Base Dimensions</Card.Header>
               <Card.Body>
-                <Card.Title>Base Dimensions:</Card.Title>
                 <Form>
                   <Form.Group controlId="formBasicText">
                     <Form.Label>X Length (cm):</Form.Label>
@@ -274,9 +274,9 @@ const Editor = () => {
                 </Form>
               </Card.Body>
             </Card>
-            <Card>
+            <Card className={"card my-2"}>
+              <Card.Header as="h3">Steps</Card.Header>
               <Card.Body>
-                <Card.Title>Steps:</Card.Title>
                 <WIStepList
                   stepIDs={stepIDs}
                   setStepIDs={setStepIDs}
@@ -294,8 +294,8 @@ const Editor = () => {
               />
             ) : (
               <Card className={"card my-2"}>
+                <Card.Header as="h3">Step:</Card.Header>
                 <Card.Body>
-                  <Card.Title>Step:</Card.Title>
                   <Card.Text>No Step Selected</Card.Text>
                 </Card.Body>
               </Card>
