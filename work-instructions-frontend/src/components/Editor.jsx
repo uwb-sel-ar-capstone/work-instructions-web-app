@@ -12,10 +12,10 @@ import "../styles/editor.css";
 import createNavigateToEditor from "../helpers/NavigateToEditor";
 import { useNavigate } from "react-router-dom";
 import ImageUploader from "./ImageUploader";
-import WIStepList from "./WIStepList";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import StepCard from "../components/StepCard";
+import WIStepsCard from "./WIStepsCard";
 
 const Editor = () => {
   const [wiProblems, setWiProblems] = useState([]);
@@ -283,17 +283,13 @@ const Editor = () => {
                 </Form>
               </Card.Body>
             </Card>
-            <Card className={"card my-2"}>
-              <Card.Header as="h3">Steps</Card.Header>
-              <Card.Body>
-                <WIStepList
-                  stepIDs={stepIDs}
-                  setStepIDs={handleStepIDsChange}
-                  currentStepID={currentStepID}
-                  setCurrentStepID={handleStepSelection}
-                />
-              </Card.Body>
-            </Card>
+            <WIStepsCard
+              stepIDs={stepIDs}
+              setStepIDs={handleStepIDsChange}
+              currentStepID={currentStepID}
+              setCurrentStepID={handleStepSelection}
+            />
+
             <ImageUploader />
           </Col>
           <Col>
