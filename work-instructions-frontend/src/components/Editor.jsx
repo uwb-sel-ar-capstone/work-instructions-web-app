@@ -220,6 +220,57 @@ const Editor = () => {
         </Row>
         <Row className="justify-content-md-center">
           <Col>
+            <Card className={"card my-2"}>
+              <Card.Body>
+                <Card.Title>WI Dimensions:</Card.Title>
+                <Form>
+                  <Form.Group controlId="formBasicText">
+                    <Form.Label>X Length (cm):</Form.Label>
+                    <Form.Control
+                      type="number"
+                      placeholder="Enter X Length"
+                      value={workInstruction.dimensions.xLengthCM}
+                      onChange={(e) => {
+                        if (e.target.value < 0) {
+                          e.target.value = 0;
+                        }
+                        setWorkInstruction((prev) => {
+                          return {
+                            ...prev,
+                            dimensions: {
+                              ...prev.dimensions,
+                              xLengthCM: e.target.value,
+                            },
+                          };
+                        });
+                      }}
+                    />
+                  </Form.Group>
+                  <Form.Group controlId="formBasicText">
+                    <Form.Label>Y Length (cm):</Form.Label>
+                    <Form.Control
+                      type="number"
+                      placeholder="Enter Y Length"
+                      value={workInstruction.dimensions.zLengthCM}
+                      onChange={(e) => {
+                        if (e.target.value < 0) {
+                          e.target.value = 0;
+                        }
+                        setWorkInstruction((prev) => {
+                          return {
+                            ...prev,
+                            dimensions: {
+                              ...prev.dimensions,
+                              zLengthCM: e.target.value,
+                            },
+                          };
+                        });
+                      }}
+                    />
+                  </Form.Group>
+                </Form>
+              </Card.Body>
+            </Card>
             <WIStepList
               stepIDs={stepIDs}
               setStepIDs={setStepIDs}
