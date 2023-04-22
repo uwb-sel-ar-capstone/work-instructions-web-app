@@ -6,6 +6,7 @@ import AllStepList from "./AllStepList";
 import { useState } from "react";
 import Popover from "react-bootstrap/Popover";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+// import StepCard from "./StepCard";
 
 const WIStepsCard = ({
   stepIDs,
@@ -20,11 +21,32 @@ const WIStepsCard = ({
 
   const [showStepPopover, setShowStepPopover] = useState(false);
 
+  //   const [showShowCreateStepPopover, setShowCreateStepPopover] = useState(false);
+
+  //   const createStepPopover = (
+  //     <Popover id="popover-basic">
+  //       <Popover.Header as="h3">Create Step</Popover.Header>
+  //       <Popover.Body>
+  //         <StepCard baseImage={baseImage} />
+  //       </Popover.Body>
+  //     </Popover>
+  //   );
+
   const stepPopover = (
     <Popover id="popover-basic">
       <Popover.Header as="h3">Step Selector</Popover.Header>
       <Popover.Body>
         <AllStepList selection={stepSelection} />
+        <Button
+          variant="secondary"
+          // need to set stepID to create to force the StepCard to create a new step (creation mode by default)
+          onClick={() => {
+            setCurrentStepID("create");
+            setShowStepPopover(false); // close it so it "redirects" the user's attention (hopefully)
+          }}
+        >
+          Create New Step
+        </Button>
       </Popover.Body>
     </Popover>
   );
@@ -49,6 +71,9 @@ const WIStepsCard = ({
             variant="secondary"
             onClick={() => {
               setShowStepPopover(!showStepPopover);
+              //   if (!showStepPopover) {
+              //     setShowCreateStepPopover(false);
+              //   }
             }}
           >
             Add Step

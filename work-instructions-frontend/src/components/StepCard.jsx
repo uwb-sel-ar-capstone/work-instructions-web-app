@@ -12,7 +12,7 @@ import Popover from "react-bootstrap/Popover";
 import PositionEditor from "./PositionEditor";
 import AllItemList from "./AllItemList";
 
-const StepCard = ({ stepID, baseImage }) => {
+const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
   const { baseAPIUrl } = useGlobalContext();
   const url = `${baseAPIUrl}/steps/${stepID}?populate=false&imageData=true`;
   const [step, setStep] = useState({
@@ -31,7 +31,9 @@ const StepCard = ({ stepID, baseImage }) => {
   });
   const [isPositionsSaved, setIsPositionsSaved] = useState(false);
 
-  const [isEditing, setIsEditing] = useState(stepID === undefined); // If there is no stepID, then we are automatically in Editing mode
+  const [isEditing, setIsEditing] = useState(
+    stepID === undefined || stepID === "create"
+  ); // If there is no stepID, then we are automatically in Editing mode
   const getStep = async (url) => {
     try {
       const { data } = await axios.get(url);
@@ -75,7 +77,7 @@ const StepCard = ({ stepID, baseImage }) => {
         console.log(error.response);
       }
     };
-    if (stepID !== undefined) {
+    if (stepID !== undefined && stepID !== "create") {
       getItemNameFromID(step.item);
     }
   }, [baseAPIUrl, step.item, stepID]);
@@ -88,7 +90,7 @@ const StepCard = ({ stepID, baseImage }) => {
 
   const handleSubmit = async () => {
     try {
-      if (stepID !== undefined) {
+      if (stepID !== undefined && stepID !== "create") {
         const existingUrl = `${baseAPIUrl}/steps/${stepID}?populate=false&imageData=true`;
         const { data } = await axios.patch(existingUrl, step);
         if (data.step) {
@@ -101,13 +103,16 @@ const StepCard = ({ stepID, baseImage }) => {
         if (data.step) {
           setStep(data.step);
           setIsEditing(false);
+          setCurrentStepID(data.step._id); // only makes sense in the context of the work instruction editor
+          // TODO: If we want to add the step to the work instruction, we can do that here.
+          // Just pass in the props for the stepIDs, and then add the step to the array.
         }
       }
     } catch (error) {
       console.log(
         "todo: display error message in the UI, not just in the console log"
       );
-      console.log(error.response);
+      console.log(error);
     }
   };
 
@@ -120,9 +125,20 @@ const StepCard = ({ stepID, baseImage }) => {
   };
 
   useEffect(() => {
-    if (stepID !== undefined) {
+    if (stepID !== undefined && stepID !== "create") {
       setIsEditing(false);
       getStep(url);
+    }
+    // If the ID has changed TO create, then we want to set the step to a blank object, and set isEditing to true. This basically only happens if we already had another step loaded and hte user clicked "create new step".
+    else if (stepID === "create") {
+      setIsEditing(true);
+      setStep({ _id: "", text: "", item: "", positions: [], image: "" });
+      setPositions({
+        xStart: 0,
+        zStart: 0,
+        xEnd: 0,
+        zEnd: 0,
+      });
     }
   }, [url, stepID]);
 

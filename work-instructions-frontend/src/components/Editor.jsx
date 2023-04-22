@@ -206,6 +206,11 @@ const Editor = () => {
     }
   };
 
+  // console log if current step ID changes
+  useEffect(() => {
+    console.log("Current Step ID: ", currentStepID);
+  }, [currentStepID]);
+
   return (
     <>
       <Container gap={3} className="col-md-9 mx-auto">
@@ -297,6 +302,7 @@ const Editor = () => {
               <StepCard
                 stepID={currentStepID}
                 baseImage={workInstruction.image}
+                stepIDs={stepIDs}
               />
             ) : (
               <Card className={"card my-2"}>
