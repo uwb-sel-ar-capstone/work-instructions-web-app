@@ -277,14 +277,6 @@ const Editor = () => {
               baseImage={workInstruction.image}
             />
             <ImageUploader />
-            {/* <Image
-              workInstruction={workInstruction}
-              workInstructionID={workInstructionID}
-              image={image}
-              imageID={imageID}
-              setImage={setImage}
-              setImageID={setImageID}
-            /> */}
           </Col>
         </Row>
         <Row className="justify-content-md-center">
