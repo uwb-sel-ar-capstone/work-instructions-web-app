@@ -198,7 +198,7 @@ const Editor = () => {
           <Col>
             <Card className={"card my-2"}>
               <Card.Body>
-                <Card.Title>WI Title:</Card.Title>
+                <Card.Title>Work Instruction Title:</Card.Title>
                 <Form>
                   <Form.Group controlId="formBasicText">
                     <Form.Control
@@ -222,7 +222,7 @@ const Editor = () => {
           <Col>
             <Card className={"card my-2"}>
               <Card.Body>
-                <Card.Title>WI Dimensions:</Card.Title>
+                <Card.Title>Base Dimensions:</Card.Title>
                 <Form>
                   <Form.Group controlId="formBasicText">
                     <Form.Label>X Length (cm):</Form.Label>
@@ -271,11 +271,17 @@ const Editor = () => {
                 </Form>
               </Card.Body>
             </Card>
-            <WIStepList
-              stepIDs={stepIDs}
-              setStepIDs={setStepIDs}
-              baseImage={workInstruction.image}
-            />
+            <Card>
+              <Card.Body>
+                <Card.Title>Steps:</Card.Title>
+
+                <WIStepList
+                  stepIDs={stepIDs}
+                  setStepIDs={setStepIDs}
+                  baseImage={workInstruction.image}
+                />
+              </Card.Body>
+            </Card>
             <ImageUploader />
           </Col>
         </Row>
