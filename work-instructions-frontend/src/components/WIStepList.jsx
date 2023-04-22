@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import Accordion from "react-bootstrap/Accordion";
-import StepCard from "./StepCard";
+import ListGroup from "react-bootstrap/ListGroup";
 import "../styles/ListGroup.css";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
-const WIStepList = ({ selection, stepIDs, setStepIDs, baseImage }) => {
+const WIStepList = ({ stepIDs, setStepIDs, setCurrentStepID }) => {
   // 24 characters in UUID by default
 
   const origLength = stepIDs.length > 0 ? stepIDs[0].length : 24;
@@ -47,7 +46,7 @@ const WIStepList = ({ selection, stepIDs, setStepIDs, baseImage }) => {
       <div>
         <Droppable droppableId={"droppable"}>
           {(provided, snapshot) => (
-            <Accordion ref={provided.innerRef} {...provided.droppableProps}>
+            <ListGroup ref={provided.innerRef} {...provided.droppableProps}>
               {stepIDs.map((stepID, index) => {
                 return (
                   <Draggable key={stepID} draggableId={stepID} index={index}>
@@ -57,19 +56,22 @@ const WIStepList = ({ selection, stepIDs, setStepIDs, baseImage }) => {
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                       >
-                        <Accordion.Item eventKey={index}>
-                          <Accordion.Header>{stepID}</Accordion.Header>
-                          <Accordion.Body>
-                            <StepCard stepID={stepID} baseImage={baseImage} />
-                          </Accordion.Body>
-                        </Accordion.Item>
+                        <ListGroup.Item
+                          onClick={() => {
+                            setCurrentStepID(stepID);
+                          }}
+                          as="li"
+                          eventKey={index}
+                        >
+                          {stepID}
+                        </ListGroup.Item>
                       </div>
                     )}
                   </Draggable>
                 );
               })}
               {provided.placeholder}
-            </Accordion>
+            </ListGroup>
           )}
         </Droppable>
       </div>

@@ -15,6 +15,7 @@ import ImageUploader from "./ImageUploader";
 import WIStepList from "./WIStepList";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
+import StepCard from "../components/StepCard";
 
 const Editor = () => {
   const [wiProblems, setWiProblems] = useState([]);
@@ -22,6 +23,7 @@ const Editor = () => {
   // eslint-disable-next-line
   const [searchParams, setSearchParams] = useSearchParams();
   const workInstructionID = searchParams.get("workInstructionID") || "";
+  const [currentStepID, setCurrentStepID] = useState("");
 
   const [workInstruction, setWorkInstruction] = useState({
     dimensions: {
@@ -78,6 +80,10 @@ const Editor = () => {
     getWorkInstruction(
       `${baseAPIUrl}/workinstructions/${workInstructionID}?imageData=true&populate=false`
     );
+    // // Set the current step ID to be the first work instruction step. May be annoying behavior if we save the work instruction, because this would then re-set the current step to be the first step.
+    // if (workInstruction.steps.length > 0) {
+    //   setCurrentStepID(workInstruction.steps[0]);
+    // }
   }, [baseAPIUrl, workInstructionID]);
 
   // Check if the work instruction is valid
@@ -193,7 +199,7 @@ const Editor = () => {
 
   return (
     <>
-      <Container gap={3} className="col-md-5 mx-auto">
+      <Container gap={3} className="col-md-9 mx-auto">
         <Row className="justify-content-md-center">
           <Col>
             <Card className={"card my-2"}>
@@ -216,10 +222,7 @@ const Editor = () => {
                 </Form>
               </Card.Body>
             </Card>
-          </Col>
-        </Row>
-        <Row className="justify-content-md-center">
-          <Col>
+
             <Card className={"card my-2"}>
               <Card.Body>
                 <Card.Title>Base Dimensions:</Card.Title>
@@ -274,15 +277,29 @@ const Editor = () => {
             <Card>
               <Card.Body>
                 <Card.Title>Steps:</Card.Title>
-
                 <WIStepList
                   stepIDs={stepIDs}
                   setStepIDs={setStepIDs}
-                  baseImage={workInstruction.image}
+                  setCurrentStepID={setCurrentStepID}
                 />
               </Card.Body>
             </Card>
             <ImageUploader />
+          </Col>
+          <Col>
+            {currentStepID !== "" ? (
+              <StepCard
+                stepID={currentStepID}
+                baseImage={workInstruction.image}
+              />
+            ) : (
+              <Card className={"card my-2"}>
+                <Card.Body>
+                  <Card.Title>Step:</Card.Title>
+                  <Card.Text>No Step Selected</Card.Text>
+                </Card.Body>
+              </Card>
+            )}
           </Col>
         </Row>
         <Row className="justify-content-md-center">
