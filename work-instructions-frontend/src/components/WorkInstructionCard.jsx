@@ -3,7 +3,7 @@ import Card from "react-bootstrap/Card";
 import createNavigateToEditor from "../helpers/NavigateToEditor";
 import { useNavigate } from "react-router-dom";
 
-const WorkInstructionCard = ({ workInstruction }) => {
+const WorkInstructionCard = ({ workInstruction, deleteWI }) => {
   const imageData = `data:${workInstruction.image.mimeType};charset=utf-8;${workInstruction.image.encoding},${workInstruction.image.imageData}`;
   const navigateToEditor = createNavigateToEditor(
     useNavigate(),
@@ -24,9 +24,14 @@ const WorkInstructionCard = ({ workInstruction }) => {
       <Card.Body>
         <Card.Title>{workInstruction.name}</Card.Title>
         <Card.Text>{workInstruction._id}</Card.Text>
-        <Button onClick={navigateToEditor} variant="light">
-          Edit WI
-        </Button>
+        <div className="d-flex justify-content-between">
+          <Button onClick={navigateToEditor} variant="light">
+            Edit WI
+          </Button>
+          <Button onClick={deleteWI} variant="danger">
+            Delete WI
+          </Button>
+        </div>
       </Card.Body>
     </Card>
   );

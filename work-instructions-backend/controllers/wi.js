@@ -133,8 +133,6 @@ const deleteWI = async (req, res, next) => {
     return next(createCustomError(`No work instruction with id: ${wiID}`, 404));
   }
   let wi = await WI.findByIdAndDelete(wiID);
-  //deletes the image that is associated with this wi
-  await Image.findByIdAndDelete(wi.image);
 
   await checkAndPopulateWI(req, next, wi);
 
