@@ -10,11 +10,7 @@ const {
   deleteWI,
 } = require("../controllers/wi");
 
-router.route("/").get(getAllWIs).post(upload.single("image"), createWI);
-router
-  .route("/:id")
-  .get(getWI)
-  .patch(upload.single("image"), updateWI)
-  .delete(deleteWI);
+router.route("/").get(getAllWIs).post(createWI);
+router.route("/:id").get(getWI).patch(updateWI).delete(deleteWI);
 
 module.exports = router;

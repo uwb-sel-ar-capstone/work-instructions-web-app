@@ -9,13 +9,13 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import "../styles/Card.css";
 import "../styles/editor.css";
-import createNavigateToEditor from "../helpers/NavigateToEditor";
 import { useNavigate } from "react-router-dom";
-import ImageUploader from "./ImageUploader";
+import WIImageCard from "./WIImageCard";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import StepCard from "../components/StepCard";
 import WIStepsCard from "./WIStepsCard";
+import { createSearchParams } from "react-router-dom";
 
 const Editor = () => {
   const [wiProblems, setWiProblems] = useState([]);
@@ -51,7 +51,34 @@ const Editor = () => {
   });
 
   const [stepIDs, setStepIDs] = useState(workInstruction.steps);
-  const [imageID, setImageID] = useState("");
+  const [imageID, setImageID] = useState(""); // imageID is stored here as this is a large file and we don't want to repeatedly call for in child components
+  const [imageObj, setImageObj] = useState(workInstruction.image);
+
+  const setNewImageID = (newImageID) => {
+    setImageID(newImageID);
+  };
+
+  useEffect(() => {
+    const getImage = async (newImageID) => {
+      try {
+        const { data } = await axios.get(`${baseAPIUrl}/images/${newImageID}`);
+        if (data.image) {
+          setImageObj(data.image);
+        }
+      } catch (error) {
+        console.log(error.response);
+      }
+    };
+    getImage(imageID);
+  }, [imageID, baseAPIUrl]);
+
+  //use effect when the imageObj updates, update the workInstruction
+  useEffect(() => {
+    setWorkInstruction((prev) => {
+      return { ...prev, image: imageObj };
+    });
+  }, [imageObj]);
+
   // const [image, setImage] = useState({}); // image is stored here as this is a large file and we don't want to repeatedly call for in child components
   const [isValidWorkInstruction, setIsValidWorkInstruction] = useState(false);
 
@@ -62,7 +89,7 @@ const Editor = () => {
         setWorkInstruction(data.wi);
         setStepIDs(data.wi.steps);
         // setImage(data.wi.image);
-        setImageID(data.wi.image._id); // only works if imageData=false
+        setImageID(data.wi.image._id);
       } else {
         setWorkInstruction({});
         // setImage({});
@@ -149,6 +176,7 @@ const Editor = () => {
   const handleSave = async (url, data, axiosFcn) => {
     try {
       const response = await axiosFcn(url, data);
+
       if (response.data.wi) {
         return response;
       }
@@ -157,31 +185,36 @@ const Editor = () => {
     }
   };
 
-  const navigateToEditor = createNavigateToEditor(
-    useNavigate(),
-    workInstruction._id
-  );
   // Button Click Handler
-
   const navigate = useNavigate();
 
   // isLoading, setLoading defined by LoadingButton
   const saveButtonFunction = (isLoading, setLoading) => {
     if (isLoading) {
       // if we don't have a work instruction ID, then we need to use the create new work instruction endpoint
-      if (workInstructionID === "") {
+      if (
+        workInstructionID === "" ||
+        workInstructionID === undefined ||
+        workInstructionID === null ||
+        workInstructionID === "create"
+      ) {
         handleSave(
           `${baseAPIUrl}/workinstructions`,
           {
             name: workInstruction.name,
             dimensions: workInstruction.dimensions,
             steps: workInstruction.steps,
-            image: imageID,
+            image: workInstruction.image._id,
           },
           axios.post
         ).then((response) => {
           setLoading(false);
-          navigateToEditor(response.data.wi._id);
+          alert("Saved Work Instruction");
+          const params = { workInstructionID: response.data.wi._id };
+          navigate({
+            pathname: "/editor",
+            search: `?${createSearchParams(params)}`,
+          });
         });
       }
       // otherwise we can use the update work instruction endpoint
@@ -192,24 +225,21 @@ const Editor = () => {
             name: workInstruction.name,
             dimensions: workInstruction.dimensions,
             steps: workInstruction.steps,
-            image: imageID,
+            image: workInstruction.image._id,
           },
           axios.patch
         ).then((response) => {
           setLoading(false);
-
-          navigateToEditor(response.data.wi._id);
-          // Refreshing page just to be sure that everything is up to date. This may be a redundant step.
-          navigate(0);
+          alert("Saved Work Instruction");
+          const params = { workInstructionID: response.data.wi._id };
+          navigate({
+            pathname: "/editor",
+            search: `?${createSearchParams(params)}`,
+          });
         });
       }
     }
   };
-
-  // console log if current step ID changes
-  useEffect(() => {
-    console.log("Current Step ID: ", currentStepID);
-  }, [currentStepID]);
 
   return (
     <>
@@ -294,14 +324,13 @@ const Editor = () => {
               currentStepID={currentStepID}
               setCurrentStepID={handleStepSelection}
             />
-
-            <ImageUploader />
           </Col>
           <Col>
+            <WIImageCard baseImage={imageObj} setImageID={setNewImageID} />
             {currentStepID !== "" ? (
               <StepCard
                 stepID={currentStepID}
-                baseImage={workInstruction.image}
+                baseImage={imageObj}
                 stepIDs={stepIDs}
               />
             ) : (

@@ -7,7 +7,6 @@ const toId = mongoose.Types.ObjectId;
 const checkIds = require("../helpers/check-ids");
 const checkId = require("../helpers/check-id");
 const trueFalse = require("../helpers/true-false");
-const createOrUpdateImageData = require("../helpers/image");
 
 /**
  * createOrUpdateWIData - helper function that parses the body of a request to generate the data used by mongoose to create or update WI documents
@@ -30,6 +29,7 @@ const createOrUpdateWIData = (bodyData) => {
     wiData["steps"] = stepIDs;
   }
   wiData["dimensions"] = bodyData.dimensions;
+  wiData["image"] = toId(bodyData.image);
   return wiData;
 };
 
@@ -99,20 +99,13 @@ const createWI = async (req, res, next) => {
     return next(createCustomError(`No steps with ids: ${badStepIds}`, 400));
   }
 
-  // Checks if we have a valid image, if so, creates the json body of the image item
-  imgData = createOrUpdateImageData(req.file);
-  if (!imgData) {
-    return next(
-      createCustomError(`Image file of type JPEG or PNG required.`, 400)
-    );
+  const existingImage = await checkId(req.body.image, Image);
+  if (!existingImage) {
+    return next(createCustomError(`No image with id: ${req.body.image}`, 400));
   }
-  //Creates the image item in mongo
-  let imageItem = await Image.create(imgData);
 
   // Creates the work instruction data
   const wiData = createOrUpdateWIData(req.body);
-  // Appends the new image data to the work instruction data
-  wiData.image = imageItem._id;
 
   let wi = await WI.create(wiData);
   await checkAndPopulateWI(req, next, wi);
@@ -163,27 +156,13 @@ const updateWI = async (req, res, next) => {
     return next(createCustomError(`No steps with ids: ${badStepIds}`, 400));
   }
 
-  const existingWI = await WI.findById(wiID);
-  const existingImageID = existingWI.image;
-  // If we have an image, check if its valid. If its not valid, return an error. If there is no image, use the existing image.
-  let imageItem = await Image.findById(existingImageID);
-  if (req.file) {
-    imgData = createOrUpdateImageData(req.file);
-    if (!imgData) {
-      return next(
-        createCustomError(`Image file of type JPEG or PNG required.`, 400)
-      );
-    }
-    // Delete the old image
-    await Image.findByIdAndDelete(existingImageID);
-    // Create the new image
-    imageItem = await Image.create(imgData);
+  const existingImage = await checkId(req.body.image, Image);
+  if (!existingImage) {
+    return next(createCustomError(`No image with id: ${req.body.image}`, 400));
   }
 
   // Creates the work instruction data
   const wiData = createOrUpdateWIData(req.body);
-  // Appends the image data to the work instruction data
-  wiData.image = imageItem._id;
 
   let wi = await WI.findOneAndUpdate({ _id: wiID }, wiData, {
     new: true, // returns the new object
