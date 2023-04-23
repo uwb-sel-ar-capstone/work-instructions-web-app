@@ -5,6 +5,7 @@ import AllImageList from "./AllImageList";
 import { useState } from "react";
 import Popover from "react-bootstrap/Popover";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import ImageUploader from "./ImageUploader";
 // import StepCard from "./StepCard";
 
 const WIStepsCard = ({ baseImage, setImageID }) => {
@@ -13,26 +14,45 @@ const WIStepsCard = ({ baseImage, setImageID }) => {
     imageData = `data:${baseImage.mimeType};charset=utf-8;${baseImage.encoding},${baseImage.imageData}`;
   }
   const [showSelectImagePopover, setSelectImagePopover] = useState(false);
+  const [showUploadImagePopover, setUploadImagePopover] = useState(false);
   const imageSelection = (image) => {
     setImageID(image._id);
     setSelectImagePopover(false);
   };
+
+  const uploadImagePopover = (
+    <Popover id="popover-basic" style={{ minWidth: "25rem" }}>
+      <Popover.Header as="h3">Upload Image</Popover.Header>
+      <Popover.Body>
+        <ImageUploader
+          setFalse={[setUploadImagePopover, setSelectImagePopover]}
+        />
+      </Popover.Body>
+    </Popover>
+  );
 
   const selectImagePopover = (
     <Popover id="popover-basic">
       <Popover.Header as="h3">Image Selector</Popover.Header>
       <Popover.Body>
         <AllImageList selection={imageSelection} />
-        <Button
-          variant="secondary"
-          // need to set stepID to create to force the StepCard to create a new step (creation mode by default)
-          onClick={() => {
-            // potentially set the image id here?
-            setSelectImagePopover(false); // close it so it "redirects" the user's attention (hopefully)
-          }}
+        <OverlayTrigger
+          show={showUploadImagePopover}
+          placement="left"
+          delay={{ show: 250, hide: 400 }}
+          overlay={uploadImagePopover}
         >
-          Upload New Image
-        </Button>
+          <Button
+            variant="secondary"
+            // need to set stepID to create to force the StepCard to create a new step (creation mode by default)
+            onClick={() => {
+              // potentially set the image id here?
+              setUploadImagePopover(true);
+            }}
+          >
+            Upload New Image
+          </Button>
+        </OverlayTrigger>
       </Popover.Body>
     </Popover>
   );

@@ -6,7 +6,7 @@ import { useGlobalContext } from "../context";
 import axios from "axios";
 import "../styles/Card.css";
 
-const ImageUploader = () => {
+const ImageUploader = ({ setFalse }) => {
   const { baseAPIUrl } = useGlobalContext();
   const [imageURL, setImageURL] = useState("");
   // This is only for the new image file, we dont want to display this on the site
@@ -32,11 +32,13 @@ const ImageUploader = () => {
     uploadImage(imageFile).then((response) => {
       console.log(response.status);
       if (response.status === 201) {
-        alert("Image Uploaded Successfully!");
+        // alert("Image Uploaded Successfully!");
         // clear state
         setImageFile(null);
         setFileName("No File Selected...");
         setImageURL("");
+        //iterate through setFalse array, calling setFalse[i](false) for each element
+        setFalse.forEach((func) => func(false));
       } else {
         alert("Image failed to upload");
         console.log(response);
