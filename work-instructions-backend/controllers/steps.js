@@ -26,6 +26,9 @@ const createOrUpdateStepData = (req) => {
   }
 
   stepData["positions"] = req.body.positions;
+  if (req.body.image) {
+    stepData["image"] = toId(req.body.image);
+  }
 
   return stepData;
 };
@@ -90,16 +93,12 @@ const createStep = async (req, res, next) => {
     return next(createCustomError(`No item with id: ${badItemIds}`, 400));
   }
 
-  const stepData = createOrUpdateStepData(req);
-
-  // get the imgData if it exists.
-  imgData = createOrUpdateImageData(req.file);
-  let imageItem = undefined;
-  // if imgData exists, create an image document and add the id to the stepData
-  if (imgData) {
-    imageItem = await Image.create(imgData);
-    stepData.image = imageItem._id;
+  const existingImage = await checkId(req.body.image, Image);
+  if (!existingImage) {
+    return next(createCustomError(`No image with id: ${req.body.image}`, 400));
   }
+
+  const stepData = createOrUpdateStepData(req);
 
   let step = await Step.create(stepData);
 
@@ -128,9 +127,6 @@ const deleteStep = async (req, res, next) => {
     return next(createCustomError(`No step with id: ${stepID}`, 404));
   }
   const step = await Step.findOneAndDelete({ _id: stepID });
-  if (step.image) {
-    await Image.findOneAndDelete({ _id: step.image });
-  }
 
   await checkAndPopulateStep(req, next, step);
 
@@ -149,46 +145,13 @@ const updateStep = async (req, res, next) => {
   if (badItemIds.length > 0) {
     return next(createCustomError(`No item with id: ${badItemIds}`, 400));
   }
+  const existingImage = await checkId(req.body.image, Image);
 
-  // get the existing step
-  const existingStep = await Step.findById(stepID);
-  const existingImageID = existingStep.image;
-
-  // if we have an existing image and we have a new image, delete the existing image and create a new image
-  let imageItem;
-  if (existingImageID) {
-    imageItem = Image.findById(existingImageID);
-  }
-  if (req.file) {
-    imgData = createOrUpdateImageData(req.file);
-    if (!imgData) {
-      return next(
-        createCustomError(`Image file of type JPEG or PNG required.`, 400)
-      );
-    }
-    // Delete the old image (if it exists)
-    if (existingImageID) {
-      await Image.findByIdAndDelete(existingImageID);
-    }
-
-    // Create the new image
-    imageItem = await Image.create(imgData);
-  } else {
-    // If we don't have a new image, but we have an existing image, and the query parameter of "deleteImage" is present, delete the existing image
-    if (existingImageID && "deleteimage" in req.query) {
-      await Image.findByIdAndDelete(existingImageID);
-      imageItem = null;
-    }
+  if (!existingImage) {
+    return next(createCustomError(`No image with id: ${req.body.image}`, 400));
   }
 
   const stepData = createOrUpdateStepData(req);
-  // If we have an image, add the image id to the stepData
-  if (imageItem) {
-    stepData.image = imageItem._id;
-  } else {
-    stepData.image = null;
-  }
-
   const step = await Step.findOneAndUpdate({ _id: stepID }, stepData, {
     new: true, // returns the new object
     runValidators: true,

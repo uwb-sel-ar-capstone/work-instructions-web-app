@@ -8,7 +8,7 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import ImageUploader from "./ImageUploader";
 // import StepCard from "./StepCard";
 
-const WIStepsCard = ({ baseImage, setImageID }) => {
+const ImageCard = ({ baseImage, setImageID, title, button }) => {
   let imageData = null;
   if (baseImage) {
     imageData = `data:${baseImage.mimeType};charset=utf-8;${baseImage.encoding},${baseImage.imageData}`;
@@ -58,9 +58,14 @@ const WIStepsCard = ({ baseImage, setImageID }) => {
   );
   return (
     <Card className={"card my-2"}>
-      <Card.Header as="h3">Base Image</Card.Header>
+      <Card.Header as="h3">{title}</Card.Header>
       <Card.Body>
-        <Card.Img variant="top" src={imageData} alt={baseImage._id} />
+        {baseImage ? (
+          <Card.Img variant="top" src={imageData} alt={baseImage._id} />
+        ) : (
+          <>{console.log(baseImage)}</>
+        )}
+
         <OverlayTrigger
           show={showSelectImagePopover}
           placement="right"
@@ -76,7 +81,7 @@ const WIStepsCard = ({ baseImage, setImageID }) => {
               //   }
             }}
           >
-            Change Base Image
+            Change {button}
           </Button>
         </OverlayTrigger>
       </Card.Body>
@@ -84,4 +89,4 @@ const WIStepsCard = ({ baseImage, setImageID }) => {
   );
 };
 
-export default WIStepsCard;
+export default ImageCard;

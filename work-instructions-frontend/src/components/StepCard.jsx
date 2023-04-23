@@ -11,6 +11,8 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
 import PositionEditor from "./PositionEditor";
 import AllItemList from "./AllItemList";
+import ImageCard from "./ImageCard";
+import DisplayImage from "./DisplayImage";
 
 const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
   const { baseAPIUrl } = useGlobalContext();
@@ -20,7 +22,12 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
     text: "",
     item: "",
     positions: [],
-    image: "",
+    image: {
+      _id: null,
+      imageData: "",
+      mimeType: "",
+      encoding: "",
+    },
   });
 
   const [positions, setPositions] = useState({
@@ -30,6 +37,34 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
     zEnd: 0,
   });
   const [isPositionsSaved, setIsPositionsSaved] = useState(false);
+
+  const [imageID, setImageID] = useState(""); // imageID is stored here as this is a large file and we don't want to repeatedly call for in child components
+  const [imageObj, setImageObj] = useState(step.image);
+
+  const setNewImageID = (newImageID) => {
+    setImageID(newImageID);
+  };
+
+  useEffect(() => {
+    const getImage = async (newImageID) => {
+      try {
+        const { data } = await axios.get(`${baseAPIUrl}/images/${newImageID}`);
+        if (data.image) {
+          setImageObj(data.image);
+        }
+      } catch (error) {
+        console.log(error.response);
+      }
+    };
+    getImage(imageID);
+  }, [imageID, baseAPIUrl]);
+
+  //use effect when the imageObj updates, update the workInstruction
+  useEffect(() => {
+    setStep((prev) => {
+      return { ...prev, image: imageObj };
+    });
+  }, [imageObj]);
 
   const [isEditing, setIsEditing] = useState(
     stepID === undefined || stepID === "create"
@@ -90,22 +125,41 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
 
   const handleSubmit = async () => {
     try {
+      const existingUrl = `${baseAPIUrl}/steps/${stepID}?populate=false&imageData=true`;
+      let body;
+      if (step.image._id) {
+        body = {
+          text: step.text,
+          item: step.item,
+          positions: step.positions,
+          image: step.image._id,
+        };
+      } else {
+        body = {
+          text: step.text,
+          item: step.item,
+          positions: step.positions,
+        };
+      }
       if (stepID !== undefined && stepID !== "create") {
-        const existingUrl = `${baseAPIUrl}/steps/${stepID}?populate=false&imageData=true`;
-        const { data } = await axios.patch(existingUrl, step);
+        const { data } = await axios.patch(existingUrl, body);
         if (data.step) {
           setStep(data.step);
+          if (data.step.image) {
+            setImageID(data.step.image._id);
+          }
           setIsEditing(false);
         }
       } else {
         const newUrl = `${baseAPIUrl}/steps?populate=false&imageData=true`;
-        const { data } = await axios.post(newUrl, step);
+        const { data } = await axios.post(newUrl, body);
         if (data.step) {
           setStep(data.step);
           setIsEditing(false);
           setCurrentStepID(data.step._id); // only makes sense in the context of the work instruction editor
           // TODO: If we want to add the step to the work instruction, we can do that here.
           // Just pass in the props for the stepIDs, and then add the step to the array.
+          setImageID("");
         }
       }
     } catch (error) {
@@ -132,7 +186,18 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
     // If the ID has changed TO create, then we want to set the step to a blank object, and set isEditing to true. This basically only happens if we already had another step loaded and hte user clicked "create new step".
     else if (stepID === "create") {
       setIsEditing(true);
-      setStep({ _id: "", text: "", item: "", positions: [], image: "" });
+      setStep({
+        _id: "",
+        text: "",
+        item: "",
+        positions: [],
+        image: {
+          _id: null,
+          imageData: "",
+          mimeType: "",
+          encoding: "",
+        },
+      });
       setPositions({
         xStart: 0,
         zStart: 0,
@@ -243,6 +308,15 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
               </Button>
             </OverlayTrigger>
           </Card.Body>
+          <Card.Body>
+            <Card.Title>Image</Card.Title>
+            <ImageCard
+              baseImage={step.image}
+              setImageID={setNewImageID}
+              title={""}
+              button={"Step Image"}
+            />
+          </Card.Body>
           <Button
             variant="primary"
             type="submit"
@@ -283,6 +357,11 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
               })}
             </ListGroup>
           </Card.Body>
+          <Card.Body>
+            <Card.Title>Image</Card.Title>
+            <DisplayImage baseImage={step.image} />
+          </Card.Body>
+
           <Button
             variant="primary"
             type="submit"

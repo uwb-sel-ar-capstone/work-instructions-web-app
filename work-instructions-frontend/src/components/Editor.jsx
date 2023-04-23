@@ -10,7 +10,7 @@ import Col from "react-bootstrap/Col";
 import "../styles/Card.css";
 import "../styles/editor.css";
 import { useNavigate } from "react-router-dom";
-import WIImageCard from "./WIImageCard";
+import ImageCard from "./ImageCard";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import StepCard from "../components/StepCard";
@@ -326,7 +326,12 @@ const Editor = () => {
             />
           </Col>
           <Col>
-            <WIImageCard baseImage={imageObj} setImageID={setNewImageID} />
+            <ImageCard
+              baseImage={imageObj}
+              setImageID={setNewImageID}
+              title={"Base Image"}
+              button={"Base Image"}
+            />
             {currentStepID !== "" ? (
               <StepCard
                 stepID={currentStepID}
