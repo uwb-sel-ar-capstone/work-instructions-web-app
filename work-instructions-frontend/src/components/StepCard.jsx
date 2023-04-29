@@ -3,7 +3,7 @@ import { useGlobalContext } from "../context";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-import Form from "react-bootstrap/Form";
+import Tiptap from "./Tiptap";
 import "../styles/Card.css";
 import ListGroup from "react-bootstrap/ListGroup";
 import CloseButton from "react-bootstrap/CloseButton";
@@ -29,6 +29,15 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
       encoding: "",
     },
   });
+
+  // newStepText will never update the actual step object, but will be in the new step body when the user clicks save
+  // Prevents weird re-render issues with the Tiptap editor
+  const [newStepText, setNewStepText] = useState(step.text || "");
+
+  // update newStepText when step.text changes
+  useEffect(() => {
+    setNewStepText(step.text);
+  }, [step.text]);
 
   const [positions, setPositions] = useState({
     xStart: 0,
@@ -59,7 +68,7 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
     getImage(imageID);
   }, [imageID, baseAPIUrl]);
 
-  //use effect when the imageObj updates, update the workInstruction
+  //use effect when the imageObj updates, update the step.image
   useEffect(() => {
     setStep((prev) => {
       return { ...prev, image: imageObj };
@@ -129,14 +138,14 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
       let body;
       if (step.image._id) {
         body = {
-          text: step.text,
+          text: newStepText,
           item: step.item,
           positions: step.positions,
           image: step.image._id,
         };
       } else {
         body = {
-          text: step.text,
+          text: newStepText,
           item: step.item,
           positions: step.positions,
         };
@@ -241,18 +250,12 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
           <Card.Header as="h3">Step Editor</Card.Header>
           <Card.Body>
             <Card.Title>Text</Card.Title>
-            <Form>
-              <Form.Group controlId="formBasicText">
-                <Form.Control
-                  type="text"
-                  placeholder="Enter text"
-                  value={step.text}
-                  onChange={(e) => {
-                    setStep({ ...step, text: e.target.value });
-                  }}
-                />
-              </Form.Group>
-            </Form>
+            <Tiptap
+              originalEditorContent={step.text}
+              setEditorContent={setNewStepText}
+              editing={true}
+              uniqueID={stepID}
+            />
           </Card.Body>
           <Card.Body>
             <Card.Title>Item</Card.Title>
@@ -332,7 +335,12 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
           <Card.Header as="h3">Step</Card.Header>
           <Card.Body>
             <Card.Title>Text</Card.Title>
-            <Card.Text>{step.text}</Card.Text>
+            <Tiptap
+              originalEditorContent={step.text}
+              setEditorContent={setNewStepText}
+              editing={false}
+              uniqueID={stepID}
+            />
           </Card.Body>
           <Card.Body>
             <Card.Title>Item</Card.Title>
