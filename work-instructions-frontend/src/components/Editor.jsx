@@ -140,7 +140,7 @@ const Editor = () => {
       workInstruction.dimensions.zLengthCM === null
     ) {
       isValid = false;
-      problems.push("Y length is 0");
+      problems.push("Z length is 0");
     }
 
     if (workInstruction.name === "") {
@@ -294,10 +294,10 @@ const Editor = () => {
                     />
                   </Form.Group>
                   <Form.Group controlId="formBasicText">
-                    <Form.Label>Y Length (cm):</Form.Label>
+                    <Form.Label>Z Length (cm):</Form.Label>
                     <Form.Control
                       type="number"
-                      placeholder="Enter Y Length"
+                      placeholder="Enter Z Length"
                       value={workInstruction.dimensions.zLengthCM}
                       onChange={(e) => {
                         if (e.target.value < 0) {
