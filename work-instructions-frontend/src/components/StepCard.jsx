@@ -350,7 +350,6 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
     </Popover>
   );
 
-  const [showValidationPopover, setShowValidationPopover] = useState(false);
   const validationPopover = (
     <Popover id="popover-basic">
       <Popover.Header as="h3">Validation Errors</Popover.Header>
@@ -366,7 +365,7 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
 
   const [showPositionPopover, setShowPositionPopover] = useState(false);
   const positionPopover = (
-    <Popover id="popover-basic">
+    <Popover id="popover-basic" style={{ maxWidth: "50vw" }}>
       <Popover.Header as="h3">Position Selector</Popover.Header>
       <Popover.Body>
         <PositionEditor
@@ -375,7 +374,6 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
           setExternalPositions={setPositions}
           setIsPositionsSaved={setIsPositionsSaved}
           setShowPositionPopover={setShowPositionPopover}
-          style={{ width: "50vw" }}
         />
       </Popover.Body>
     </Popover>
