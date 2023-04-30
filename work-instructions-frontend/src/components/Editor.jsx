@@ -37,6 +37,7 @@ const Editor = () => {
   const [workInstruction, setWorkInstruction] = useState({
     dimensions: {
       xLengthCM: 0,
+      yLengthCM: 0,
       zLengthCM: 0,
     },
     _id: "",
@@ -133,6 +134,14 @@ const Editor = () => {
     ) {
       isValid = false;
       problems.push("X length is 0");
+    }
+
+    if (
+      workInstruction.dimensions.yLengthCM === 0 ||
+      workInstruction.dimensions.yLengthCM === null
+    ) {
+      isValid = false;
+      problems.push("Y length is 0");
     }
 
     if (
@@ -287,6 +296,28 @@ const Editor = () => {
                             dimensions: {
                               ...prev.dimensions,
                               xLengthCM: e.target.value,
+                            },
+                          };
+                        });
+                      }}
+                    />
+                  </Form.Group>
+                  <Form.Group controlId="formBasicText">
+                    <Form.Label>Y Length (cm):</Form.Label>
+                    <Form.Control
+                      type="number"
+                      placeholder="Enter Y Length"
+                      value={workInstruction.dimensions.yLengthCM}
+                      onChange={(e) => {
+                        if (e.target.value < 0) {
+                          e.target.value = 0;
+                        }
+                        setWorkInstruction((prev) => {
+                          return {
+                            ...prev,
+                            dimensions: {
+                              ...prev.dimensions,
+                              yLengthCM: e.target.value,
                             },
                           };
                         });

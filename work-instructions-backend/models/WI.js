@@ -19,6 +19,11 @@ const WISchema = new mongoose.Schema({
       required: [true, "must specify xLength in cm"],
       min: 0,
     },
+    yLengthCM: {
+      type: Number,
+      required: [true, "must specify yLength in cm"],
+      min: 0,
+    },
     zLengthCM: {
       type: Number,
       required: [true, "must specify zLength in cm"],

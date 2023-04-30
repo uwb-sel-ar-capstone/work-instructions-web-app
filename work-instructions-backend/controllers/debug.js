@@ -144,6 +144,7 @@ const populateDB = async (req, res) => {
     ],
     dimensions: {
       xLengthCM: 6.49,
+      yLengthCM: 1.1,
       zLengthCM: 3.048,
     },
   });
@@ -161,6 +162,7 @@ const populateDB = async (req, res) => {
     ],
     dimensions: {
       xLengthCM: 16.3,
+      yLengthCM: 1.2,
       zLengthCM: 5.5,
     },
   });
@@ -173,6 +175,7 @@ const populateDB = async (req, res) => {
     }),
     dimensions: {
       xLengthCM: 16.3,
+      yLengthCM: 1.3,
       zLengthCM: 5.5,
     },
   });
