@@ -13,6 +13,7 @@ import PositionEditor from "./PositionEditor";
 import AllItemList from "./AllItemList";
 import ImageCard from "./ImageCard";
 import DisplayImage from "./DisplayImage";
+import { Form } from "react-bootstrap";
 
 const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
   const { baseAPIUrl } = useGlobalContext();
@@ -225,12 +226,85 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
   }, [url, stepID]);
 
   const [showItemPopover, setShowItemPopover] = useState(false);
+  const [showCreateItemPopover, setShowCreateItemPopover] = useState(false);
+
+  const [newItemName, setNewItemName] = useState("");
+
+  const handleCreateItem = async () => {
+    try {
+      const newUrl = `${baseAPIUrl}/items`;
+      const body = {
+        name: newItemName,
+      };
+      const { data } = await axios.post(newUrl, body);
+      if (data.item) {
+        setNewItemName("");
+        setShowCreateItemPopover(false);
+        setShowItemPopover(false);
+      }
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  const [createItemButtonDisabled, setCreateItemButtonDisabled] =
+    useState(true);
+
+  useEffect(() => {
+    if (newItemName.length > 0) {
+      setCreateItemButtonDisabled(false);
+    } else {
+      setCreateItemButtonDisabled(true);
+    }
+  }, [newItemName]);
+
+  const createItemPopover = (
+    <Popover id="popover-basic">
+      <Popover.Header as="h3">Create New Item</Popover.Header>
+      <Popover.Body>
+        <Form>
+          <Form.Group controlId="formItemName">
+            <Form.Label>Item Name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter item name"
+              onChange={(e) => {
+                setNewItemName(e.target.value);
+              }}
+            />
+          </Form.Group>
+          <Button
+            variant="primary"
+            onClick={handleCreateItem}
+            disabled={createItemButtonDisabled}
+          >
+            Create Item
+          </Button>
+        </Form>
+      </Popover.Body>
+    </Popover>
+  );
 
   const itemPopover = (
     <Popover id="popover-basic">
       <Popover.Header as="h3">Item Selector</Popover.Header>
       <Popover.Body>
         <AllItemList selection={itemSelection} />
+        <OverlayTrigger
+          trigger="click"
+          placement="right"
+          overlay={createItemPopover}
+          show={showCreateItemPopover}
+        >
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setShowCreateItemPopover(true);
+            }}
+          >
+            Create New Item
+          </Button>
+        </OverlayTrigger>
       </Popover.Body>
     </Popover>
   );
