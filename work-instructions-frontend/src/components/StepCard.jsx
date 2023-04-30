@@ -456,7 +456,23 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
               button={"Step Image"}
             />
           </Card.Body>
-          <OverlayTrigger placement="top" overlay={validationPopover}>
+          {stepProblems.length > 0 ? (
+            <OverlayTrigger placement="top" overlay={validationPopover}>
+              <span className="d-flex justify-content-center">
+                <Button
+                  variant="primary"
+                  type="submit"
+                  onClick={() => {
+                    handleSubmit();
+                  }}
+                  disabled={true} // disable the button if there are problems
+                  className="flex-grow-1"
+                >
+                  Save
+                </Button>{" "}
+              </span>
+            </OverlayTrigger>
+          ) : (
             <span className="d-flex justify-content-center">
               <Button
                 variant="primary"
@@ -464,13 +480,13 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
                 onClick={() => {
                   handleSubmit();
                 }}
-                disabled={stepProblems.length > 0} // disable the button if there are problems
+                disabled={false}
                 className="flex-grow-1"
               >
                 Save
               </Button>
             </span>
-          </OverlayTrigger>
+          )}
         </Card>
       ) : (
         <Card className={"card my-2"}>
