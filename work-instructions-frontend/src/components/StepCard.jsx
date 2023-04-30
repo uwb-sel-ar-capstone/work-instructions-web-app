@@ -16,6 +16,7 @@ import DisplayImage from "./DisplayImage";
 import { Form } from "react-bootstrap";
 
 const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
+  const [stepProblems, setStepProblems] = useState([]);
   const { baseAPIUrl } = useGlobalContext();
   const url = `${baseAPIUrl}/steps/${stepID}?populate=false&imageData=true`;
   const [step, setStep] = useState({
@@ -173,6 +174,22 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
         const { data } = await axios.post(newUrl, body);
         if (data.step) {
           setStep(data.step);
+          if (!data.step.image) {
+            setStep((prev) => {
+              return {
+                ...prev,
+                image: {
+                  _id: null,
+                  imageData: "",
+                  mimeType: "",
+                  encoding: "",
+                },
+              };
+            });
+            setImageID("");
+          } else {
+            setImageID(data.step.image._id);
+          }
           setIsEditing(false);
           setCurrentStepID(data.step._id); // only makes sense in the context of the work instruction editor
           // TODO: If we want to add the step to the work instruction, we can do that here.
@@ -222,6 +239,7 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
         xEnd: 0,
         zEnd: 0,
       });
+      setNewStepText("");
     }
   }, [url, stepID]);
 
@@ -257,6 +275,29 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
       setCreateItemButtonDisabled(true);
     }
   }, [newItemName]);
+
+  // useEffect to check if the step is valid
+  useEffect(() => {
+    console.log("hello world");
+    // Method to validate the stepcard before submitting
+    const validateStepCard = () => {
+      const problems = [];
+      // checks the stepText, not the step object, because the step object is not updated until the user clicks submit.
+      if (newStepText.length <= 0 || newStepText === "<p></p>") {
+        problems.push("Step text cannot be empty");
+      }
+      if (step.item === "") {
+        problems.push("Step must have an item");
+      }
+      if (step.positions.length <= 0) {
+        problems.push("Step must have at least one position");
+      }
+      setStepProblems(problems);
+      console.log(problems);
+      return problems.length === 0;
+    };
+    validateStepCard();
+  }, [newStepText, step, step.item, step.positions]);
 
   const createItemPopover = (
     <Popover id="popover-basic">
@@ -305,6 +346,20 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
             Create New Item
           </Button>
         </OverlayTrigger>
+      </Popover.Body>
+    </Popover>
+  );
+
+  const [showValidationPopover, setShowValidationPopover] = useState(false);
+  const validationPopover = (
+    <Popover id="popover-basic">
+      <Popover.Header as="h3">Validation Errors</Popover.Header>
+      <Popover.Body>
+        <ListGroup>
+          {stepProblems.map((problem, index) => {
+            return <ListGroup.Item key={index}>{problem}</ListGroup.Item>;
+          })}
+        </ListGroup>
       </Popover.Body>
     </Popover>
   );
@@ -403,15 +458,21 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
               button={"Step Image"}
             />
           </Card.Body>
-          <Button
-            variant="primary"
-            type="submit"
-            onClick={() => {
-              handleSubmit();
-            }}
-          >
-            Save
-          </Button>
+          <OverlayTrigger placement="top" overlay={validationPopover}>
+            <span className="d-flex justify-content-center">
+              <Button
+                variant="primary"
+                type="submit"
+                onClick={() => {
+                  handleSubmit();
+                }}
+                disabled={stepProblems.length > 0} // disable the button if there are problems
+                className="flex-grow-1"
+              >
+                Save
+              </Button>
+            </span>
+          </OverlayTrigger>
         </Card>
       ) : (
         <Card className={"card my-2"}>
