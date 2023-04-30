@@ -420,7 +420,7 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
                       <strong>zStart:</strong> {position.zStart}
                     </Card.Text>
                     <Card.Text>
-                      <strong>xEnd:</strong> {position.zEnd}{" "}
+                      <strong>xEnd:</strong> {position.xEnd}{" "}
                       <strong>zEnd:</strong> {position.zEnd}
                     </Card.Text>
                     <CloseButton onClick={() => handlePositionClose(index)} />
@@ -513,7 +513,7 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
                       <strong>zStart:</strong> {position.zStart}
                     </Card.Text>
                     <Card.Text>
-                      <strong>xEnd:</strong> {position.zEnd}{" "}
+                      <strong>xEnd:</strong> {position.xEnd}{" "}
                       <strong>zEnd:</strong> {position.zEnd}
                     </Card.Text>
                   </ListGroup.Item>
