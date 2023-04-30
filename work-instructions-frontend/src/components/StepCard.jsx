@@ -278,7 +278,6 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
 
   // useEffect to check if the step is valid
   useEffect(() => {
-    console.log("hello world");
     // Method to validate the stepcard before submitting
     const validateStepCard = () => {
       const problems = [];
@@ -293,7 +292,6 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
         problems.push("Step must have at least one position");
       }
       setStepProblems(problems);
-      console.log(problems);
       return problems.length === 0;
     };
     validateStepCard();
