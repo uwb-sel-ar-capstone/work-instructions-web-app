@@ -320,6 +320,7 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
           setExternalPositions={setPositions}
           setIsPositionsSaved={setIsPositionsSaved}
           setShowPositionPopover={setShowPositionPopover}
+          style={{ width: "50vw" }}
         />
       </Popover.Body>
     </Popover>
@@ -379,7 +380,7 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
             <OverlayTrigger
               show={showPositionPopover}
               trigger="click"
-              placement="right"
+              placement="left"
               delay={{ show: 250, hide: 400 }}
               overlay={positionPopover}
             >
