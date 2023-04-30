@@ -303,7 +303,7 @@ const Editor = () => {
                     />
                   </Form.Group>
                   <Form.Group controlId="formBasicText">
-                    <Form.Label>Y Length (cm):</Form.Label>
+                    <Form.Label>Y Length (height) (cm):</Form.Label>
                     <Form.Control
                       type="number"
                       placeholder="Enter Y Length"
