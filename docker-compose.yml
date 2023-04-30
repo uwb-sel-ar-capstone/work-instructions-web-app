@@ -30,14 +30,16 @@ services:
     working_dir: /usr/src/app
 
   mongo:
-    image: mongo
+    build:
+      context: ./mongo_db
+      dockerfile: Dockerfile
     ports:
       - "27017:27017"
     networks:
       - mern-app
     volumes:
       - mongo-data:/data/db
-    command: mongod --quiet --logpath /dev/null
+      - ./mongo_db_data:/data/restore
 
 networks:
   mern-app:
