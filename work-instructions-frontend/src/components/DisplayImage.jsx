@@ -11,7 +11,7 @@ const ImageCard = ({ baseImage }) => {
   return (
     <>
       {" "}
-      {baseImage ? (
+      {baseImage._id !== null ? (
         <Card.Img variant="top" src={imageData} alt={baseImage._id} />
       ) : (
         <Card.Text>No Image</Card.Text>

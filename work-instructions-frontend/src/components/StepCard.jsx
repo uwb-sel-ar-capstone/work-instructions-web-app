@@ -83,6 +83,14 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
       const { data } = await axios.get(url);
       if (data.step) {
         setStep(data.step);
+        if (!data.step.image) {
+          setStep((prev) => {
+            return {
+              ...prev,
+              image: { _id: null, imageData: "", mimeType: "", encoding: "" },
+            };
+          });
+        }
       }
     } catch (error) {
       console.log(error.response);
@@ -136,7 +144,7 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
     try {
       const existingUrl = `${baseAPIUrl}/steps/${stepID}?populate=false&imageData=true`;
       let body;
-      if (step.image._id) {
+      if (step.image && step.image._id !== null) {
         body = {
           text: newStepText,
           item: step.item,

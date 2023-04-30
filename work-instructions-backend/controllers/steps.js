@@ -93,9 +93,13 @@ const createStep = async (req, res, next) => {
     return next(createCustomError(`No item with id: ${badItemIds}`, 400));
   }
 
-  const existingImage = await checkId(req.body.image, Image);
-  if (!existingImage) {
-    return next(createCustomError(`No image with id: ${req.body.image}`, 400));
+  if (req.body.image) {
+    const existingImage = await checkId(req.body.image, Image);
+    if (!existingImage) {
+      return next(
+        createCustomError(`No image with id: ${req.body.image}`, 400)
+      );
+    }
   }
 
   const stepData = createOrUpdateStepData(req);
@@ -145,10 +149,15 @@ const updateStep = async (req, res, next) => {
   if (badItemIds.length > 0) {
     return next(createCustomError(`No item with id: ${badItemIds}`, 400));
   }
-  const existingImage = await checkId(req.body.image, Image);
 
-  if (!existingImage) {
-    return next(createCustomError(`No image with id: ${req.body.image}`, 400));
+  if (req.body.image) {
+    const existingImage = await checkId(req.body.image, Image);
+
+    if (!existingImage) {
+      return next(
+        createCustomError(`No image with id: ${req.body.image}`, 400)
+      );
+    }
   }
 
   const stepData = createOrUpdateStepData(req);
