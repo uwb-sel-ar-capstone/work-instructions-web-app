@@ -17,7 +17,7 @@ const fs = require("fs");
 
 const app = express();
 const port = process.env.PORT || 5000;
-const mongoURI = process.env.MONGO_URI || "mongodb://mongo:27017/";
+const mongoURI = process.env.MONGO_URI || "mongodb://mongo:27017/database";
 
 app.use(cors());
 app.use(express.json());

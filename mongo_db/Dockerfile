@@ -1,19 +1,13 @@
 # syntax=docker/dockerfile:1
 FROM mongo
 
-RUN mkdir -p /data/restore
-WORKDIR /data/restore
+# Create a directory to store the backup files
+RUN mkdir -p /restore
 
-COPY ./mongo_db_data .
-
-# display directory address
-RUN pwd
-#display files in directory
-RUN ls -a
+# Copy the backup files to the container
+COPY mongo_db_data/* /restore/
 
 EXPOSE 27017
-RUN mongod & \
-    sleep 5s && \
-    mongorestore . && \
-    mongod --shutdown
+
+# Start the mongod process in the background
 CMD ["mongod", "--quiet", "--logpath", "/dev/null"]
