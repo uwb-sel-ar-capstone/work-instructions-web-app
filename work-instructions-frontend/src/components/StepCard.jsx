@@ -14,6 +14,7 @@ import AllItemList from "./AllItemList";
 import ImageCard from "./ImageCard";
 import DisplayImage from "./DisplayImage";
 import { Form } from "react-bootstrap";
+import PopoverHeader from "./PopoverHeader";
 
 const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
   const [stepProblems, setStepProblems] = useState([]);
@@ -299,7 +300,12 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
 
   const createItemPopover = (
     <Popover id="popover-basic">
-      <Popover.Header as="h3">Create New Item</Popover.Header>
+      <Popover.Header>
+        <PopoverHeader
+          title="Create New Item"
+          onClose={() => setShowCreateItemPopover(false)}
+        />
+      </Popover.Header>
       <Popover.Body>
         <Form>
           <Form.Group controlId="formItemName">
@@ -326,7 +332,12 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
 
   const itemPopover = (
     <Popover id="popover-basic">
-      <Popover.Header as="h3">Item Selector</Popover.Header>
+      <Popover.Header>
+        <PopoverHeader
+          title="Select Item"
+          onClose={() => setShowItemPopover(false)}
+        />
+      </Popover.Header>
       <Popover.Body>
         <AllItemList selection={itemSelection} />
         <OverlayTrigger
@@ -364,7 +375,12 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
   const [showPositionPopover, setShowPositionPopover] = useState(false);
   const positionPopover = (
     <Popover id="popover-basic" style={{ maxWidth: "50vw" }}>
-      <Popover.Header as="h3">Position Selector</Popover.Header>
+      <Popover.Header>
+        <PopoverHeader
+          title="Position Editor"
+          onClose={() => setShowPositionPopover(false)}
+        />
+      </Popover.Header>
       <Popover.Body>
         <PositionEditor
           image={baseImage}

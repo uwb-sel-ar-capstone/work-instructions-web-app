@@ -6,6 +6,7 @@ import { useState } from "react";
 import Popover from "react-bootstrap/Popover";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import ImageUploader from "./ImageUploader";
+import PopoverHeader from "./PopoverHeader";
 // import StepCard from "./StepCard";
 
 const ImageCard = ({ baseImage, setImageID, title, button }) => {
@@ -22,7 +23,12 @@ const ImageCard = ({ baseImage, setImageID, title, button }) => {
 
   const uploadImagePopover = (
     <Popover id="popover-basic" style={{ minWidth: "25rem" }}>
-      <Popover.Header as="h3">Upload Image</Popover.Header>
+      <Popover.Header>
+        <PopoverHeader
+          title="Upload Image"
+          onClose={() => setUploadImagePopover(false)}
+        />
+      </Popover.Header>
       <Popover.Body>
         <ImageUploader
           setFalse={[setUploadImagePopover, setSelectImagePopover]}
@@ -33,7 +39,12 @@ const ImageCard = ({ baseImage, setImageID, title, button }) => {
 
   const selectImagePopover = (
     <Popover id="popover-basic">
-      <Popover.Header as="h3">Image Selector</Popover.Header>
+      <Popover.Header>
+        <PopoverHeader
+          title="Image Selector"
+          onClose={() => setSelectImagePopover(false)}
+        />
+      </Popover.Header>
       <Popover.Body>
         <AllImageList selection={imageSelection} />
         <OverlayTrigger

@@ -6,6 +6,7 @@ import AllStepList from "./AllStepList";
 import { useState } from "react";
 import Popover from "react-bootstrap/Popover";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import PopoverHeader from "./PopoverHeader";
 // import StepCard from "./StepCard";
 
 const WIStepsCard = ({
@@ -21,20 +22,14 @@ const WIStepsCard = ({
 
   const [showStepPopover, setShowStepPopover] = useState(false);
 
-  //   const [showShowCreateStepPopover, setShowCreateStepPopover] = useState(false);
-
-  //   const createStepPopover = (
-  //     <Popover id="popover-basic">
-  //       <Popover.Header as="h3">Create Step</Popover.Header>
-  //       <Popover.Body>
-  //         <StepCard baseImage={baseImage} />
-  //       </Popover.Body>
-  //     </Popover>
-  //   );
-
   const stepPopover = (
     <Popover id="popover-basic">
-      <Popover.Header as="h3">Step Selector</Popover.Header>
+      <Popover.Header>
+        <PopoverHeader
+          title="Step Selector"
+          onClose={() => setShowStepPopover(false)}
+        />
+      </Popover.Header>
       <Popover.Body>
         <AllStepList selection={stepSelection} />
         <Button
