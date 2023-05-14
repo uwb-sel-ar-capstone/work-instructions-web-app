@@ -388,6 +388,7 @@ const StepCard = ({ stepID, baseImage, setCurrentStepID }) => {
           setExternalPositions={setPositions}
           setIsPositionsSaved={setIsPositionsSaved}
           setShowPositionPopover={setShowPositionPopover}
+          otherPositionsInStep={step.positions}
         />
       </Popover.Body>
     </Popover>

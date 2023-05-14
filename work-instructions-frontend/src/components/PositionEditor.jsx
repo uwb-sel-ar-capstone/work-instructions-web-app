@@ -17,10 +17,17 @@ const PositionEditor = ({
   setExternalPositions,
   setIsPositionsSaved,
   setShowPositionPopover,
+  otherPositionsInStep, // array of positions in the step that are for the current position
 }) => {
   let imageData = null;
   if (image) {
     imageData = `data:${image.mimeType};charset=utf-8;${image.encoding},${image.imageData}`;
+    let imageObj = new Image();
+    imageObj.onload = () => {
+      setXDimension(imageObj.naturalWidth);
+      setYDimension(imageObj.naturalHeight);
+    };
+    imageObj.src = imageData;
   }
 
   const [showingTextPositionSelector, setShowingTextPositionSelector] =
@@ -48,8 +55,7 @@ const PositionEditor = ({
     const target = event.target;
     // dimension = DOMRect object relevant to the clicked image
     const dimension = target.getBoundingClientRect();
-    setXDimension(dimension.width);
-    setYDimension(dimension.height);
+
     // gets the 0-1 scaled coords of the user click
     let x = (event.clientX - dimension.left) / dimension.width;
     let y = (event.clientY - dimension.top) / dimension.height;
@@ -78,6 +84,7 @@ const PositionEditor = ({
             yDimension={yDimension}
             getPositions={getPositions}
             isStartPosition={isStartPosition}
+            otherPositionsInStep={otherPositionsInStep}
           />
         ) : (
           <></>

@@ -12,6 +12,7 @@ const RectImage = ({
   yDimension,
   getPositions,
   isStartPosition,
+  otherPositionsInStep,
 }) => {
   const [rectPos, setRectPos] = useState({ x: null, y: null });
 
@@ -37,6 +38,30 @@ const RectImage = ({
           }}
         />
       )}
+      {otherPositionsInStep.map((position, index) => {
+        console.log(position);
+        return (
+          <div
+            key={index}
+            style={{
+              backgroundColor: "blue",
+              // using z instead of y because of the way the position data is stored externally.
+              width: `${
+                Math.abs(position.xEnd - position.xStart) * xDimension
+              }px`,
+              height: `${
+                Math.abs(position.zEnd - position.zStart) * yDimension
+              }px`,
+              position: "absolute",
+              left: `${
+                Math.min(position.xStart, position.xEnd) * xDimension
+              }px`,
+              top: `${Math.min(position.zStart, position.zEnd) * yDimension}px`,
+              opacity: "0.45",
+            }}
+          />
+        );
+      })}
       {/* {xStart && yStart && xEnd && yEnd && rectPos.x !== null && (
         <div
           style={{
