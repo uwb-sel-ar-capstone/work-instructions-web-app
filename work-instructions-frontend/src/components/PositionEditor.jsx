@@ -5,6 +5,7 @@ import Form from "react-bootstrap/Form";
 import "../styles/Card.css";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
+import RectImage from "./RectImage";
 
 /**
  * positions should be object with {xStart:, zStart:, xEnd:, zEnd:}
@@ -26,6 +27,8 @@ const PositionEditor = ({
     useState(true);
   // Stateful variables for position data
   const [isStartPosition, setIsStartPosition] = useState(true); // will alternate between start and end positions
+  const [xDimension, setXDimension] = useState(1);
+  const [yDimension, setYDimension] = useState(1);
   const [positions, setPositions] = useState({
     xStart: 0,
     zStart: 0,
@@ -45,12 +48,14 @@ const PositionEditor = ({
     const target = event.target;
     // dimension = DOMRect object relevant to the clicked image
     const dimension = target.getBoundingClientRect();
+    setXDimension(dimension.width);
+    setYDimension(dimension.height);
     // gets the 0-1 scaled coords of the user click
     let x = (event.clientX - dimension.left) / dimension.width;
     let y = (event.clientY - dimension.top) / dimension.height;
     // Alternates between setting start and end positions
     if (isStartPosition) {
-      setPositions({ ...positions, xStart: x, zStart: y });
+      setPositions({ xStart: x, zStart: y, xEnd: 0, zEnd: 0 }); // Zero out to match the behavior of the rectangle highlights.
       setIsStartPosition(false);
     } else {
       setPositions({ ...positions, xEnd: x, zEnd: y });
@@ -62,11 +67,17 @@ const PositionEditor = ({
     <div id="bootstrap-overrides">
       <Card className="card my-2">
         {image ? (
-          <Card.Img
-            variant="top"
+          <RectImage
             src={imageData}
             alt={image.name}
-            onClick={getPositions}
+            xStart={positions.xStart}
+            yStart={positions.zStart}
+            xEnd={positions.xEnd}
+            yEnd={positions.zEnd}
+            xDimension={xDimension}
+            yDimension={yDimension}
+            getPositions={getPositions}
+            isStartPosition={isStartPosition}
           />
         ) : (
           <></>
