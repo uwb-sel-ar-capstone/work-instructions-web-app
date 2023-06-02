@@ -30,4 +30,10 @@ Open a command window in the project's root directory. Run the following command
 docker compose up
 ```
 
+While the docker containers are running, in a separate WSL/terminal window run the following command to populate the database. This only needs to be done once.
+
+```
+docker exec -it work-instructions-web-app-mongo-1 mongorestore --db database --verbose /restore/
+```
+
 The frontend will be available at http://localhost:3000/ and the backend at http://localhost:5000/
